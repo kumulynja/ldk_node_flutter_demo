@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ldk_node_flutter_demo/blocs/mnemonic/mnemonic_bloc.dart';
+import 'package:ldk_node_flutter_demo/blocs/recovery/recovery_bloc.dart';
 import 'package:ldk_node_flutter_demo/screens/onboarding/create_wallet_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/onboarding/onboarding_completed_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/onboarding/mnemonic_screen.dart';
@@ -49,11 +50,8 @@ class AppState extends State<App> {
               path: 'onboarding',
               name: 'onboarding',
               pageBuilder: (BuildContext context, GoRouterState state) {
-                return MaterialPage(
-                  child: BlocProvider.value(
-                    value: _mnemonicBloc,
-                    child: const CreateWalletScreen(),
-                  ),
+                return const MaterialPage(
+                  child: CreateWalletScreen(),
                 );
               },
               routes: [
@@ -61,11 +59,8 @@ class AppState extends State<App> {
                   path: 'mnemonic',
                   name: 'mnemonic',
                   pageBuilder: (BuildContext context, GoRouterState state) {
-                    return MaterialPage(
-                      child: BlocProvider.value(
-                        value: _mnemonicBloc,
-                        child: const MnemonicScreen(),
-                      ),
+                    return const MaterialPage(
+                      child: MnemonicScreen(),
                     );
                   },
                 ),
@@ -73,11 +68,8 @@ class AppState extends State<App> {
                   path: 'recovery',
                   name: 'recovery',
                   pageBuilder: (BuildContext context, GoRouterState state) {
-                    return MaterialPage(
-                      child: BlocProvider.value(
-                        value: _mnemonicBloc,
-                        child: const RecoveryScreen(),
-                      ),
+                    return const MaterialPage(
+                      child: RecoveryScreen(),
                     );
                   },
                 ),
