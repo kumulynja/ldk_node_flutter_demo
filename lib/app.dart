@@ -17,12 +17,14 @@ class App extends StatefulWidget {
 }
 
 class AppState extends State<App> {
-  late final MnemonicBloc _mnemonicBloc;
+  // Add blocs here that needs to be shared between screens
+  // late final ...Bloc _...Bloc;
 
   @override
   void initState() {
     super.initState();
-    _mnemonicBloc = MnemonicBloc();
+    // init blocs here that need to be shared between screens
+    // _...Bloc = ...Bloc();
   }
 
   @override
@@ -98,7 +100,8 @@ class AppState extends State<App> {
 
   @override
   void dispose() {
-    _mnemonicBloc.close();
+    // Close blocs that are used over different screens here
+    //_...Bloc.close();
     super.dispose();
   }
 }
