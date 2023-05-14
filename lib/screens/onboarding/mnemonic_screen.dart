@@ -5,6 +5,8 @@ class MnemonicScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text("SHOW MNEMONIC HERE");
+    return const Scaffold(
+      body: Text("SHOW MNEMONIC HERE"),
+    );
   }
 }

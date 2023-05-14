@@ -85,11 +85,8 @@ class AppState extends State<App> {
                   path: 'completed',
                   name: 'onboarding-completed',
                   pageBuilder: (BuildContext context, GoRouterState state) {
-                    return MaterialPage(
-                      child: BlocProvider.value(
-                        value: _mnemonicBloc,
-                        child: const OnboardingCompletedScreen(),
-                      ),
+                    return const MaterialPage(
+                      child: OnboardingCompletedScreen(),
                     );
                   },
                 ),
