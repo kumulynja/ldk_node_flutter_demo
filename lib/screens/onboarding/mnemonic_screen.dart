@@ -10,15 +10,27 @@ class MnemonicScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) {
-        final bloc = MnemonicBloc();
-        bloc.add(MnemonicGenerationPressed());
-        return bloc;
-      },
+      create: (_) => MnemonicBloc()..add(MnemonicGenerationPressed()),
       child: Scaffold(
         body: BlocBuilder<MnemonicBloc, MnemonicState>(
-          buildWhen: (previous, current) => current.mnemonic != "",
-          builder: (context, state) => Text(state.mnemonic),
+          builder: (context, state) {
+            switch (state.runtimeType) {
+              case MnemonicInitial:
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              case MnemonicSuccess:
+                return Center(
+                  child: Text(state.mnemonic),
+                );
+              case MnemonicFailure:
+                return const Center(
+                  child: Text('failed to generate a mnemonic.'),
+                );
+              default:
+                throw const FormatException('Unknow state in mnemonic bloc.');
+            }
+          },
         ),
       ),
     );
