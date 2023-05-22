@@ -1,9 +1,5 @@
-import 'package:bdk_flutter/bdk_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ldk_node_flutter_demo/blocs/mnemonic/mnemonic_bloc.dart';
-import 'package:ldk_node_flutter_demo/blocs/mnemonic/mnemonic_event.dart';
 
 class CreateWalletScreen extends StatelessWidget {
   const CreateWalletScreen({super.key});
@@ -40,8 +36,7 @@ class CreateWalletScreen extends StatelessWidget {
                     FilledButton(
                       onPressed: () async {
                         print('BUTTON PRESSED TO GENERATE WALLET');
-                        BlocProvider.of<MnemonicBloc>(context)
-                            .add(MnemonicGenerationPressed());
+                        GoRouter.of(context).pushNamed('mnemonic');
                       },
                       child: const Text(
                         'Create coin purse',

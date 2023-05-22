@@ -1,7 +1,11 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:ldk_node_flutter_demo/models/secure_storage_item.dart';
+library secure_storage_layer;
 
-class StorageService {
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:secure_storage_layer/src/models/secure_storage_item.dart';
+
+// Todo: Add possible exceptions and error handling
+
+class SecureStorageLayer {
   final _secureStorage = const FlutterSecureStorage();
 
   Future<void> writeSecureData(SecureStorageItem newItem) async {
@@ -19,8 +23,8 @@ class StorageService {
     return readData;
   }
 
-  Future<void> deleteSecureData(SecureStorageItem item) async {
-    await _secureStorage.delete(key: item.key, aOptions: _getAndroidOptions());
+  Future<void> deleteSecureData(String key) async {
+    await _secureStorage.delete(key: key, aOptions: _getAndroidOptions());
   }
 
   Future<bool> containsKeyInSecureData(String key) async {
