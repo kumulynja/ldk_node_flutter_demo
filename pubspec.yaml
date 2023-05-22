@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.19.6 <=3.10.0'
+  sdk: '>=3.0.0 <=4.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -46,7 +46,11 @@ dependencies:
       url: https://github.com/kumulynja/ldk-node-flutter.git
       ref: rename-librust
   equatable: ^2.0.5
-  flutter_secure_storage: ^8.0.0
+  mnemonic_repository:
+    path: packages/mnemonic_repository
+  lightning_node_repository:
+    path: packages/lightning_node_repository
+  
 
 dev_dependencies:
   flutter_test:

@@ -1,0 +1,10 @@
+name: lightning_node_repository
+description: Dart package which manages the lightning node domain.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dev_dependencies:
+  test: ^1.17.11

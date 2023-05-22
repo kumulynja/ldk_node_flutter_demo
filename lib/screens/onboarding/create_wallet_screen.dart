@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ldk_node_flutter_demo/blocs/mnemonic/mnemonic_bloc.dart';
-import 'package:ldk_node_flutter_demo/blocs/mnemonic/mnemonic_event.dart';
 
 class CreateWalletScreen extends StatelessWidget {
   const CreateWalletScreen({super.key});
