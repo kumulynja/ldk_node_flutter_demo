@@ -8,17 +8,17 @@ import 'package:ldk_node_flutter_demo/screens/onboarding/mnemonic_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/onboarding/recovery_screen.dart';
 import 'package:ldk_node_flutter_demo/theme/app_theme.dart';
 import 'package:lightning_node_repository/lightning_node_repository.dart';
-import 'package:mnemonic_repository/mnemonic_repository.dart';
+import 'package:seed_repository/seed_repository.dart';
 
 class App extends StatefulWidget {
   const App(
-      {required MnemonicRepository mnemonicRepository,
+      {required SeedRepository seedRepository,
       required LightningNodeRepository lightningNodeRepository,
       super.key})
-      : _mnemonicRepository = mnemonicRepository,
+      : _seedRepository = seedRepository,
         _lightningNodeRepository = lightningNodeRepository;
 
-  final MnemonicRepository _mnemonicRepository;
+  final SeedRepository _seedRepository;
   final LightningNodeRepository _lightningNodeRepository;
 
   @override
@@ -54,7 +54,7 @@ class AppState extends State<App> {
           redirect: (BuildContext context, GoRouterState state) async {
             if (state.location == '/') {
               // Only redirect if it's a top-level route
-              if (!(await widget._mnemonicRepository.doesMnemonicExist())) {
+              if (!(await widget._seedRepository.doesMnemonicExist())) {
                 // If no mnemonic exists, onboarding should be done to create
                 //  or restore one.
                 return '/onboarding';
@@ -109,7 +109,7 @@ class AppState extends State<App> {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(
-          value: widget._mnemonicRepository,
+          value: widget._seedRepository,
         ),
         RepositoryProvider.value(
           value: widget._lightningNodeRepository,

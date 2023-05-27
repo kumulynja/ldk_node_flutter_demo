@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ldk_node_flutter_demo/blocs/mnemonic/mnemonic_bloc.dart';
 import 'package:ldk_node_flutter_demo/blocs/mnemonic/mnemonic_event.dart';
 import 'package:ldk_node_flutter_demo/blocs/mnemonic/mnemonic_state.dart';
-import 'package:mnemonic_repository/mnemonic_repository.dart';
+import 'package:seed_repository/seed_repository.dart';
 
 class MnemonicScreen extends StatelessWidget {
   const MnemonicScreen({super.key});
@@ -13,7 +13,7 @@ class MnemonicScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => MnemonicBloc(
-        mnemonicRepository: RepositoryProvider.of<MnemonicRepository>(context),
+        seedRepository: RepositoryProvider.of<SeedRepository>(context),
       )..add(MnemonicGenerationPressed()),
       child: Scaffold(
         body: BlocBuilder<MnemonicBloc, MnemonicState>(

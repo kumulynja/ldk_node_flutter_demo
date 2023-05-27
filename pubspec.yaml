@@ -46,8 +46,8 @@ dependencies:
       url: https://github.com/kumulynja/ldk-node-flutter.git
       ref: rename-librust
   equatable: ^2.0.5
-  mnemonic_repository:
-    path: packages/mnemonic_repository
+  seed_repository:
+    path: packages/seed_repository
   lightning_node_repository:
     path: packages/lightning_node_repository
   

@@ -1,5 +1,5 @@
-name: mnemonic_repository
-description: A starting point for Dart libraries or applications.
+name: seed_repository
+description: A Dart package to generate, store and derive seeds in Bitcoin wallets.
 version: 1.0.0
 publish_to: none
 # repository: https://github.com/my_org/my_repo
@@ -10,6 +10,10 @@ environment:
 # Add regular dependencies here.
 dependencies:
   # path: ^1.8.0
+  bdk_flutter:
+    git:
+      url: https://github.com/LtbLightning/bdk-flutter.git
+      ref: upgrade-bdk-ffi-v0.28
   secure_storage_layer:
     path: ../secure_storage_layer
 

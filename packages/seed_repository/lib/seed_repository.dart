@@ -3,6 +3,6 @@
 /// More dartdocs go here.
 library;
 
-export 'src/mnemonic_repository_base.dart';
+export 'src/seed_repository_base.dart';
 
 // TODO: Export any libraries intended for clients of this package.

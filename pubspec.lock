@@ -489,13 +489,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
-  mnemonic_repository:
-    dependency: "direct main"
-    description:
-      path: "packages/mnemonic_repository"
-      relative: true
-    source: path
-    version: "1.0.0"
   mockito:
     dependency: transitive
     description:
@@ -615,6 +608,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  seed_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/seed_repository"
+      relative: true
+    source: path
+    version: "1.0.0"
   shelf:
     dependency: transitive
     description:
