@@ -1,25 +1,33 @@
 import 'package:equatable/equatable.dart';
-import 'package:ldk_node/ldk_node.dart' as ldk;
+import 'package:lightning_node_repository/lightning_node_repository.dart';
 
 abstract class LightningNodeState extends Equatable {
-  LightningNodeState();
-  //final ldk.Node node;
-  //final ldk.PublicKey nodeId;
+  const LightningNodeState({this.alias});
+
+  final String? alias;
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [alias];
 }
 
 class LightningNodeInitial extends LightningNodeState {
-  LightningNodeInitial();
+  const LightningNodeInitial({String? alias}) : super(alias: alias);
 }
 
-// class NodeRunInProgress extends NodeState {}
-
 class LightningNodeRunSuccess extends LightningNodeState {
-  LightningNodeRunSuccess();
+  const LightningNodeRunSuccess({
+    required this.network,
+    required this.nodeId,
+    String? alias,
+  }) : super(alias: alias);
+
+  final Network network;
+  final String nodeId;
+
+  @override
+  List<Object?> get props => [network, nodeId, alias];
 }
 
 class LightningNodeRunFailure extends LightningNodeState {
-  LightningNodeRunFailure();
+  const LightningNodeRunFailure({String? alias}) : super(alias: alias);
 }

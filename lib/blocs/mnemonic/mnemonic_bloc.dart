@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:bdk_flutter/bdk_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ldk_node_flutter_demo/blocs/mnemonic/mnemonic_event.dart';
 import 'package:ldk_node_flutter_demo/blocs/mnemonic/mnemonic_state.dart';
@@ -16,14 +14,13 @@ class MnemonicBloc extends Bloc<MnemonicEvent, MnemonicState> {
 
   final SeedRepository _seedRepository;
 
-  Future<FutureOr<void>> _onGenerationPressed(
+  Future<void> _onGenerationPressed(
     MnemonicGenerationPressed event,
     Emitter<MnemonicState> emit,
   ) async {
     try {
       final mnemonic = await _seedRepository.create24WordMnemonic();
-      print(await mnemonic.toLightningSeed(Network.Regtest));
-      emit(MnemonicSuccess(mnemonic: mnemonic.asString()));
+      emit(MnemonicSuccess(mnemonic.asString()));
     } catch (e) {
       emit(MnemonicFailure());
     }
@@ -33,12 +30,19 @@ class MnemonicBloc extends Bloc<MnemonicEvent, MnemonicState> {
     MnemonicConfirmed event,
     Emitter<MnemonicState> emit,
   ) async {
-    try {
-      // Store the mnemonic in secure storage.
-      await _seedRepository.storeMnemonic(state.mnemonic);
-      emit(MnemonicStoreSuccess(mnemonic: state.mnemonic));
-    } catch (e) {
-      emit(MnemonicStoreFailure(mnemonic: state.mnemonic));
+    // The only states that have a mnemonic to be confirmed are MnemonicSucces and MnemonicStoreFailure
+    // Other states do not have a mnemonic available.
+    if (state is MnemonicSuccess || state is MnemonicStoreFailure) {
+      final mnemonic = state is MnemonicSuccess
+          ? (state as MnemonicSuccess).mnemonic
+          : (state as MnemonicStoreFailure).mnemonic;
+      try {
+        // Store the mnemonic in secure storage.
+        await _seedRepository.storeMnemonic(mnemonic);
+        emit(const MnemonicStoreSuccess());
+      } catch (e) {
+        emit(MnemonicStoreFailure(mnemonic));
+      }
     }
   }
 }

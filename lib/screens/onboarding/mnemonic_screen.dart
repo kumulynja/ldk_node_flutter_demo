@@ -16,79 +16,84 @@ class MnemonicScreen extends StatelessWidget {
         seedRepository: RepositoryProvider.of<SeedRepository>(context),
       )..add(MnemonicGenerationPressed()),
       child: Scaffold(
-        body: BlocBuilder<MnemonicBloc, MnemonicState>(
-          builder: (context, state) {
-            if (state is MnemonicInitial) {
-              return const CircularProgressIndicator();
-            }
+        body: BlocListener<MnemonicBloc, MnemonicState>(
+          // Separate consequences of changes in the bloc, like navigation here, in a BlocListener
+          // so the BlocBuilder is only concerned with the UI.
+          listener: (context, state) {
             if (state is MnemonicStoreSuccess) {
               // The mnemonic is stored successfully
               context.goNamed('home');
             }
-            return Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+          },
+          child: BlocBuilder<MnemonicBloc, MnemonicState>(
+            builder: (context, state) => switch (state) {
+              MnemonicInitial() ||
+              MnemonicStoreSuccess() =>
+                const Center(child: CircularProgressIndicator()),
+              MnemonicSuccess() =>
+                _buildMnemonicScreen((state).mnemonic, 'Continue', () {
+                  context.read<MnemonicBloc>().add(MnemonicConfirmed());
+                }, 'Make sure you have written down and safely stored your mnemonic before continuing.',
+                    context),
+              MnemonicFailure() => _buildMnemonicScreen(
+                    'Wallet creation failed.', 'Try again', () {
+                  context.read<MnemonicBloc>().add(MnemonicGenerationPressed());
+                }, 'Failed to generate a mnemonic. Please try again.', context),
+              MnemonicStoreFailure() =>
+                _buildMnemonicScreen((state).mnemonic, 'Continue', () {
+                  context.read<MnemonicBloc>().add(MnemonicConfirmed());
+                }, 'Failed to store the mnemonic. Please try again.', context),
+              _ => throw const FormatException(
+                  'Unknow state in mnemonic bloc.',
+                ),
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMnemonicScreen(String mnemonic, String buttonText,
+      VoidCallback onPressed, String message, BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                mnemonic,
+                style: Theme.of(context).textTheme.displaySmall,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: Column(
               children: [
-                Expanded(
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Text(
-                        state.mnemonic.isNotEmpty
-                            ? state.mnemonic
-                            : "Failed to generate mnemonic.",
-                        style: Theme.of(context).textTheme.displayMedium,
-                      ),
-                    ),
+                FilledButton(
+                  onPressed: onPressed,
+                  child: Text(
+                    buttonText,
                   ),
                 ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: Column(
-                      children: [
-                        FilledButton(
-                          onPressed: state.mnemonic.isNotEmpty
-                              ? () {
-                                  context
-                                      .read<MnemonicBloc>()
-                                      .add(MnemonicConfirmed());
-                                }
-                              : null, // null makes the button disabled
-                          child: const Text(
-                            'Continue',
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: switch (state.runtimeType) {
-                            MnemonicSuccess || MnemonicStoreSuccess => Text(
-                                "Make sure you have written down and safely stored your mnemonic before continuing.",
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            MnemonicFailure => Text(
-                                "Failed to generate a mnemonic. Go back and try again.",
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            MnemonicStoreFailure => Text(
-                                "Failed to store the mnemonic. Try again...",
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            _ => throw const FormatException(
-                                'Unknow state in mnemonic bloc.',
-                              ),
-                          },
-                        )
-                      ],
-                    ),
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Text(
+                    message,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
               ],
-            );
-          },
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }

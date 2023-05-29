@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_bloc.dart';
+import 'package:ldk_node_flutter_demo/blocs/network/network_cubit.dart';
+import 'package:ldk_node_flutter_demo/screens/lightning_wallet/lightning_wallet_home_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/onboarding/create_wallet_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/onboarding/onboarding_completed_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/onboarding/mnemonic_screen.dart';
@@ -46,9 +48,7 @@ class AppState extends State<App> {
           name: 'home',
           pageBuilder: (BuildContext context, GoRouterState state) {
             return const MaterialPage(
-              child: Center(
-                child: Text("WELCOME HOME!!!"),
-              ),
+              child: LightningWalletHomeScreen(),
             );
           },
           redirect: (BuildContext context, GoRouterState state) async {
@@ -115,10 +115,18 @@ class AppState extends State<App> {
           value: widget._lightningNodeRepository,
         ),
       ],
-      child: BlocProvider(
-        create: (_) => LightningNodeBloc(
-          lightningNodeRepository: widget._lightningNodeRepository,
-        ),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => NetworkCubit(Network.Regtest),
+          ),
+          BlocProvider(
+            create: (_) => LightningNodeBloc(
+              lightningNodeRepository: widget._lightningNodeRepository,
+              seedRepository: widget._seedRepository,
+            ),
+          ),
+        ],
         child: MaterialApp.router(
           title: 'LDK Node Flutter Demo',
           theme: AppTheme.lightTheme,

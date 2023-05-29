@@ -1,4 +1,3 @@
-import 'package:bdk_flutter/bdk_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:ldk_node_flutter_demo/app.dart';
 import 'package:lightning_node_repository/lightning_node_repository.dart';
@@ -12,9 +11,7 @@ Future<void> main() async {
 
   // Delete stored mnemonic to start with onboarding
   // comment out to keep the already stored mnemonic
-  // await seedRepository.deleteMnemonic();
-  final mnemonic = await seedRepository.retrieveMnemonic();
-  print(await mnemonic.toLightningSeed(Network.Regtest));
+  //  await seedRepository.deleteMnemonic();
 
   runApp(App(
       seedRepository: seedRepository,

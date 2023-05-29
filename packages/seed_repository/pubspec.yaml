@@ -5,7 +5,7 @@ publish_to: none
 # repository: https://github.com/my_org/my_repo
 
 environment:
-  sdk: ^3.0.1
+  sdk: '>=3.0.0 <4.0.0'
 
 # Add regular dependencies here.
 dependencies:
@@ -13,7 +13,7 @@ dependencies:
   bdk_flutter:
     git:
       url: https://github.com/LtbLightning/bdk-flutter.git
-      ref: upgrade-bdk-ffi-v0.28
+      ref: 9d8b7b96c9ec0c973330c38a17de43d844f8a3e2
   secure_storage_layer:
     path: ../secure_storage_layer
 

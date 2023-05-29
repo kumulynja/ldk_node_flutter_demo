@@ -28,7 +28,6 @@ class SeedRepository {
   Future<Mnemonic> retrieveMnemonic() async {
     final mnemonicWords =
         await _secureStorageLayer.readSecureData(_mnemonicKey);
-    print('words: $mnemonicWords');
     if (mnemonicWords != null) {
       return Mnemonic.fromString(mnemonicWords);
     } else {
@@ -42,9 +41,9 @@ class SeedRepository {
 }
 
 extension UnifiedWallet on Mnemonic {
-  Future<List<int>> toLightningSeed(Network network) async {
-    final masterXprv =
-        await DescriptorSecretKey.create(network: network, mnemonic: this);
+  Future<List<int>> toLightningSeed(Network network, String? password) async {
+    final masterXprv = await DescriptorSecretKey.create(
+        network: network, mnemonic: this, password: password);
     final derivedXprv =
         await masterXprv.derive(await DerivationPath.create(path: "m/535h"));
     return derivedXprv.secretBytes();

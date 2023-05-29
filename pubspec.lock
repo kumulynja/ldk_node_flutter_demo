@@ -42,11 +42,11 @@ packages:
     source: hosted
     version: "2.11.0"
   bdk_flutter:
-    dependency: "direct main"
+    dependency: transitive
     description:
       path: "."
-      ref: "upgrade-bdk-ffi-v0.28"
-      resolved-ref: "5c9360729d40af30abd3022d3695ce3de5a5313d"
+      ref: f001b984b630531a452b2446226784d6fdedaf89
+      resolved-ref: f001b984b630531a452b2446226784d6fdedaf89
       url: "https://github.com/LtbLightning/bdk-flutter.git"
     source: git
     version: "0.28.0"
@@ -426,11 +426,11 @@ packages:
     source: hosted
     version: "4.8.1"
   ldk_node:
-    dependency: "direct main"
+    dependency: transitive
     description:
       path: "."
       ref: rename-librust
-      resolved-ref: "10f173e873c7d306a2211b6c543de3991d6aa1c6"
+      resolved-ref: dbf2c3f389106f18a944ed65d89208ccfaf59e08
       url: "https://github.com/kumulynja/ldk-node-flutter.git"
     source: git
     version: "0.1.0"
@@ -813,5 +813,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.0.1 <4.0.0"
+  dart: ">=3.0.0 <4.0.0"
   flutter: ">=3.3.0"
