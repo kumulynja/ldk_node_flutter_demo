@@ -13,15 +13,21 @@ import 'package:lightning_node_repository/lightning_node_repository.dart';
 import 'package:seed_repository/seed_repository.dart';
 
 class App extends StatefulWidget {
-  const App(
-      {required SeedRepository seedRepository,
-      required LightningNodeRepository lightningNodeRepository,
-      super.key})
-      : _seedRepository = seedRepository,
-        _lightningNodeRepository = lightningNodeRepository;
+  const App({
+    required SeedRepository seedRepository,
+    required LightningNodeRepository lightningNodeRepository,
+    required NetworkCubit networkCubit,
+    required LightningNodeBloc lightningNodeBloc,
+    super.key,
+  })  : _seedRepository = seedRepository,
+        _lightningNodeRepository = lightningNodeRepository,
+        _networkCubit = networkCubit,
+        _lightningNodeBloc = lightningNodeBloc;
 
   final SeedRepository _seedRepository;
   final LightningNodeRepository _lightningNodeRepository;
+  final NetworkCubit _networkCubit;
+  final LightningNodeBloc _lightningNodeBloc;
 
   @override
   AppState createState() => AppState();
@@ -117,14 +123,11 @@ class AppState extends State<App> {
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(
-            create: (_) => NetworkCubit(Network.Regtest),
+          BlocProvider.value(
+            value: widget._networkCubit,
           ),
-          BlocProvider(
-            create: (_) => LightningNodeBloc(
-              lightningNodeRepository: widget._lightningNodeRepository,
-              seedRepository: widget._seedRepository,
-            ),
+          BlocProvider.value(
+            value: widget._lightningNodeBloc,
           ),
         ],
         child: MaterialApp.router(

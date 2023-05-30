@@ -46,4 +46,8 @@ extension NetworkX on Network {
   }
 }
 
-class LightningNodeRepository {}
+class LightningNodeRepository {
+  Future<bool> isNodeRunning() {
+    return Future.value(false);
+  }
+}
