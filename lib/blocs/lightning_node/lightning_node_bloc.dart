@@ -33,12 +33,16 @@ class LightningNodeBloc extends Bloc<LightningNodeEvent, LightningNodeState> {
   ) async {
     try {
       final mnemonic = await _seedRepository.retrieveMnemonic();
-      final seed = await mnemonic.toLightningSeed(
-          event.network.bdkNetwork, event.password);
-      print("seed: $seed");
-      // Todo: Use _lightningNodeRepository to start the node with the seed
-      emit(LightningNodeRunSuccess(network: event.network, nodeId: '<nodeId>'));
+      //final seed = await mnemonic.toLightningSeed(event.network.bdkNetwork, event.password);
+      //print("seed: $seed");
+      print("mnemonic: ${mnemonic.toString()}");
+      await _lightningNodeRepository.startNodeWithMnemonic(
+          mnemonic: mnemonic.asString(), network: event.network);
+      print("node started");
+      final nodeId = await _lightningNodeRepository.nodeId;
+      emit(LightningNodeRunSuccess(network: event.network, nodeId: nodeId));
     } catch (e) {
+      print("node start failed with error: $e");
       emit(const LightningNodeRunFailure());
     }
   }

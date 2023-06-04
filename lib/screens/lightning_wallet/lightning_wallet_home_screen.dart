@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_bloc.dart';
 import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_state.dart';
-import 'package:lightning_node_repository/lightning_node_repository.dart';
-import 'package:seed_repository/seed_repository.dart';
 
 class LightningWalletHomeScreen extends StatelessWidget {
   const LightningWalletHomeScreen({super.key});
