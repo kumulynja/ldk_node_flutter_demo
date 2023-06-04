@@ -27,7 +27,7 @@ SPEC CHECKSUMS:
   bdk_flutter: 606f35fb59c99b9894a2a80cca66f9ccc824506b
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_secure_storage: 23fc622d89d073675f2eaa109381aefbcf5a49be
-  ldk_node: a8583b127353e571e428397e9f4cef7d5b0f78d0
+  ldk_node: 22f8295d7ea99b61dea82fe2819057a4e3d0e1d1
 
 PODFILE CHECKSUM: ce13d36744da294d67f8e460dbb7aed7c09bd7f4
 

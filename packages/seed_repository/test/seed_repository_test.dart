@@ -1,4 +1,4 @@
-import 'package:mnemonic_repository/mnemonic_repository.dart';
+import 'package:seed_repository/seed_repository.dart';
 import 'package:test/test.dart';
 
 void main() {

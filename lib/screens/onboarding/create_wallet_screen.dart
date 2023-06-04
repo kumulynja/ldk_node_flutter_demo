@@ -35,7 +35,6 @@ class CreateWalletScreen extends StatelessWidget {
                   children: [
                     FilledButton(
                       onPressed: () async {
-                        print('BUTTON PRESSED TO GENERATE WALLET');
                         GoRouter.of(context).pushNamed('mnemonic');
                       },
                       child: const Text(
@@ -44,7 +43,6 @@ class CreateWalletScreen extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        print('BUTTON PRESSED TO RECOVER WALLET');
                         GoRouter.of(context).pushNamed('recovery');
                       },
                       child: const Text('Restore funds'),

@@ -2,24 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_bloc.dart';
+import 'package:ldk_node_flutter_demo/blocs/network/network_cubit.dart';
+import 'package:ldk_node_flutter_demo/screens/lightning_wallet/lightning_wallet_home_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/onboarding/create_wallet_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/onboarding/onboarding_completed_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/onboarding/mnemonic_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/onboarding/recovery_screen.dart';
 import 'package:ldk_node_flutter_demo/theme/app_theme.dart';
 import 'package:lightning_node_repository/lightning_node_repository.dart';
-import 'package:mnemonic_repository/mnemonic_repository.dart';
+import 'package:seed_repository/seed_repository.dart';
 
 class App extends StatefulWidget {
-  const App(
-      {required MnemonicRepository mnemonicRepository,
-      required LightningNodeRepository lightningNodeRepository,
-      super.key})
-      : _mnemonicRepository = mnemonicRepository,
-        _lightningNodeRepository = lightningNodeRepository;
+  const App({
+    required SeedRepository seedRepository,
+    required LightningNodeRepository lightningNodeRepository,
+    required NetworkCubit networkCubit,
+    required LightningNodeBloc lightningNodeBloc,
+    super.key,
+  })  : _seedRepository = seedRepository,
+        _lightningNodeRepository = lightningNodeRepository,
+        _networkCubit = networkCubit,
+        _lightningNodeBloc = lightningNodeBloc;
 
-  final MnemonicRepository _mnemonicRepository;
+  final SeedRepository _seedRepository;
   final LightningNodeRepository _lightningNodeRepository;
+  final NetworkCubit _networkCubit;
+  final LightningNodeBloc _lightningNodeBloc;
 
   @override
   AppState createState() => AppState();
@@ -46,15 +54,13 @@ class AppState extends State<App> {
           name: 'home',
           pageBuilder: (BuildContext context, GoRouterState state) {
             return const MaterialPage(
-              child: Center(
-                child: Text("WELCOME HOME!!!"),
-              ),
+              child: LightningWalletHomeScreen(),
             );
           },
           redirect: (BuildContext context, GoRouterState state) async {
             if (state.location == '/') {
               // Only redirect if it's a top-level route
-              if (!(await widget._mnemonicRepository.doesMnemonicExist())) {
+              if (!(await widget._seedRepository.doesMnemonicExist())) {
                 // If no mnemonic exists, onboarding should be done to create
                 //  or restore one.
                 return '/onboarding';
@@ -109,16 +115,21 @@ class AppState extends State<App> {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(
-          value: widget._mnemonicRepository,
+          value: widget._seedRepository,
         ),
         RepositoryProvider.value(
           value: widget._lightningNodeRepository,
         ),
       ],
-      child: BlocProvider(
-        create: (_) => LightningNodeBloc(
-          lightningNodeRepository: widget._lightningNodeRepository,
-        ),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider.value(
+            value: widget._networkCubit,
+          ),
+          BlocProvider.value(
+            value: widget._lightningNodeBloc,
+          ),
+        ],
         child: MaterialApp.router(
           title: 'LDK Node Flutter Demo',
           theme: AppTheme.lightTheme,
