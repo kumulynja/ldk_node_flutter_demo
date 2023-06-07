@@ -14,15 +14,16 @@ Future<void> main() async {
   final lightningNodeRepository = LightningNodeRepository();
   // Create BloCs
   final networkCubit = NetworkCubit(
-      Network.Regtest); // Change this to Network.Bitcoin in production
+      Network.regtest); // Change this to Network.Bitcoin in production
   final lightningNodeBloc = LightningNodeBloc(
     lightningNodeRepository: lightningNodeRepository,
     seedRepository: seedRepository,
   );
 
-  // Delete stored mnemonic to start with onboarding
-  // comment out to keep the already stored mnemonic
-  // await seedRepository.deleteMnemonic();
+  // @dev The following line is just for testing purposes
+  // Delete stored mnemonic to start with onboarding.
+  // Comment it out to keep the already stored mnemonic and skip onboarding.
+  await seedRepository.deleteMnemonic();
 
   runApp(App(
     seedRepository: seedRepository,

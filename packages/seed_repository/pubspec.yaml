@@ -10,10 +10,10 @@ environment:
 # Add regular dependencies here.
 dependencies:
   # path: ^1.8.0
-  bdk_flutter:
+  bdk_flutter: 
     git:
-      url: https://github.com/LtbLightning/bdk-flutter.git
-      ref: 9d8b7b96c9ec0c973330c38a17de43d844f8a3e2
+      url: https://github.com/kumulynja/bdk-flutter
+      ref: frb-to-1.77.0
   secure_storage_layer:
     path: ../secure_storage_layer
 
