@@ -7,14 +7,14 @@ environment:
   sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
-  bdk_flutter:
+  bdk_flutter: 
     git:
-      url: https://github.com/LtbLightning/bdk-flutter.git
-      ref: 9d8b7b96c9ec0c973330c38a17de43d844f8a3e2
+      url: https://github.com/kumulynja/bdk-flutter
+      ref: frb-to-1.77.0
   ldk_node:
     git:
       url: https://github.com/LtbLightning/ldk-node-flutter
-      ref: main
+      ref: v0.1.1
   path_provider: ^2.0.15
       
 dev_dependencies:

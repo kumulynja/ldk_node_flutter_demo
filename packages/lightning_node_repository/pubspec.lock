@@ -45,11 +45,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "9d8b7b96c9ec0c973330c38a17de43d844f8a3e2"
-      resolved-ref: "9d8b7b96c9ec0c973330c38a17de43d844f8a3e2"
-      url: "https://github.com/LtbLightning/bdk-flutter.git"
+      ref: "frb-to-1.77.0"
+      resolved-ref: "3f463bda45aac53e21b0ba9f28f42b4d3cd0f852"
+      url: "https://github.com/kumulynja/bdk-flutter"
     source: git
-    version: "0.28.0"
+    version: "0.28.3"
   boolean_selector:
     dependency: transitive
     description:
@@ -203,18 +203,18 @@ packages:
     dependency: transitive
     description:
       name: flutter_rust_bridge
-      sha256: "83d4b4d2847e438eb647437c14d780f293dc2407f04854b227c18af2e6426eab"
+      sha256: c039cb7b21d11665591557c1bf1d558f8db549a260cc69d455f30443a883f95c
       url: "https://pub.dev"
     source: hosted
-    version: "1.75.1"
+    version: "1.77.1"
   freezed:
     dependency: transitive
     description:
       name: freezed
-      sha256: "2edb9ef971d0f803860ecd9084afd48c717d002141ad77b69be3e976bee7190e"
+      sha256: a9520490532087cf38bf3f7de478ab6ebeb5f68bb1eb2641546d92719b224445
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.4"
+    version: "2.3.5"
   freezed_annotation:
     dependency: transitive
     description:
@@ -291,11 +291,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: main
-      resolved-ref: a2eb6d06c30e851625633624924713cf7cc12106
+      ref: "v0.1.1"
+      resolved-ref: "0178f7bc17fcce4519a1348afe1cfdec4d288fb9"
       url: "https://github.com/LtbLightning/ldk-node-flutter"
     source: git
-    version: "0.1.0"
+    version: "0.1.1"
   logging:
     dependency: transitive
     description:
