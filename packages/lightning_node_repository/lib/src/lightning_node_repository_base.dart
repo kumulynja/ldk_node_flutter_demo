@@ -85,17 +85,23 @@ class LightningNodeRepository {
   }
 
   Future<NodeConfig> _getConfig({Network network = Network.regtest}) async {
-    // Try to get a previously stored config file, if not present,
-    //  fallback to a default config
-    try {
-      final file = await _getConfigFile();
-      // Read from file
-      String serializedJsonStringConfig = await file.readAsString();
-      // Deserialize JSON to Config object
-      return NodeConfig.fromJsonString(serializedJsonStringConfig);
-    } catch (e) {
-      return _getDefaultConfig(network: network);
+    final file = await _getConfigFile();
+
+    if (file.existsSync()) {
+      try {
+        // Read from file
+        String serializedJsonStringConfig = await file.readAsString();
+        // Deserialize JSON to Config object
+        return NodeConfig.fromJsonString(serializedJsonStringConfig);
+      } catch (e) {
+        // Log the error or handle it appropriately
+        print('Config file could not be read: $e');
+      }
     }
+
+    // If the file does not exist or there was an error reading/deserializing,
+    // fallback to the default config
+    return _getDefaultConfig(network: network);
   }
 
   Future<NodeConfig> _getDefaultConfig({
