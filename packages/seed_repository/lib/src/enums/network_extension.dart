@@ -4,7 +4,7 @@ import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
 // Extension to be able to map the exposed Network enum onto ldk_node's Network enum.
 // This way the lightning_node_repository enum can be used in the app code without it needing to know about ldk_node.
 extension NetworkX on Network {
-  bdk.Network get bdkNetwork {
+  bdk.Network get asBdkNetwork {
     switch (this) {
       case Network.bitcoin:
         return bdk.Network.Bitcoin;

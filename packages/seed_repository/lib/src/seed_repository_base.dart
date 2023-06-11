@@ -45,7 +45,7 @@ class SeedRepository {
 extension UnifiedWallet on bdk.Mnemonic {
   Future<List<int>> toLightningSeed(Network network, String? password) async {
     final masterXprv = await bdk.DescriptorSecretKey.create(
-        network: network.bdkNetwork, mnemonic: this, password: password);
+        network: network.asBdkNetwork, mnemonic: this, password: password);
     final derivedXprv = await masterXprv
         .derive(await bdk.DerivationPath.create(path: "m/535h"));
     return derivedXprv.secretBytes();

@@ -3,7 +3,9 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:lightning_node_repository/src/enums/network.dart';
+import 'package:lightning_node_repository/src/ldk/channel_details_extension.dart';
 import 'package:lightning_node_repository/src/ldk/node_config_extension.dart';
+import 'package:lightning_node_repository/src/models/channel.dart';
 import 'package:lightning_node_repository/src/models/node_config.dart';
 import 'package:lightning_node_repository/src/models/balance.dart';
 
@@ -40,10 +42,15 @@ class LightningNodeRepository {
     await _saveConfig(config);
   }
 
-  // Getters and setters
+  // Getters
   Future<String> get nodeId async {
     final publicKey = await _node.nodeId();
     return publicKey.keyHex;
+  }
+
+  Future<String> get newFundingAddress async {
+    final address = await _node.newFundingAddress();
+    return address.addressHex;
   }
 
   Future<Balance> get balance async {
@@ -63,11 +70,17 @@ class LightningNodeRepository {
     );
   }
 
+  Future<List<Channel>> get channels async {
+    final channels = await _node.listChannels();
+    return channels.map((channel) => channel.asChannel).toList();
+  }
+
   // Private instance methods
   Future<ldk.Builder> _getNodeBuilder(
       {Network network = Network.regtest}) async {
     final config = await _getConfig(network: network);
-    ldk.Builder builder = ldk.Builder.fromConfig(config: config.ldkNodeConfig);
+    ldk.Builder builder =
+        ldk.Builder.fromConfig(config: config.asLdkNodeConfig);
     return builder;
   }
 

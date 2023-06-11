@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:lightning_node_repository/lightning_node_repository.dart';
+import 'package:ldk_node_flutter_demo/enums/app_network.dart';
 
 abstract class LightningNodeState extends Equatable {
   const LightningNodeState({this.alias});
@@ -21,7 +21,7 @@ class LightningNodeRunSuccess extends LightningNodeState {
     String? alias,
   }) : super(alias: alias);
 
-  final Network network;
+  final AppNetwork network;
   final String nodeId;
 
   @override

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ldk_node_flutter_demo/app.dart';
+import 'package:ldk_node_flutter_demo/enums/app_network.dart';
+import 'package:ldk_node_flutter_demo/blocs/network/network_cubit.dart';
 import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_bloc.dart';
 import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_event.dart';
-import 'package:ldk_node_flutter_demo/blocs/network/network_cubit.dart';
-import 'package:lightning_node_repository/lightning_node_repository.dart';
 import 'package:seed_repository/seed_repository.dart';
+import 'package:lightning_node_repository/lightning_node_repository.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +15,7 @@ Future<void> main() async {
   final lightningNodeRepository = LightningNodeRepository();
   // Create BloCs
   final networkCubit = NetworkCubit(
-      Network.regtest); // Change this to Network.Bitcoin in production
+      AppNetwork.regtest); // Change this to Network.Bitcoin in production
   final lightningNodeBloc = LightningNodeBloc(
     lightningNodeRepository: lightningNodeRepository,
     seedRepository: seedRepository,
