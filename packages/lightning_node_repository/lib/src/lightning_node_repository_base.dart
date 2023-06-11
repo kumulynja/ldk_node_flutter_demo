@@ -1,63 +1,20 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:ldk_node/ldk_node.dart' as ldk;
-import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
+import 'package:lightning_node_repository/src/enums/network.dart';
+import 'package:lightning_node_repository/src/ldk/node_config_extension.dart';
+import 'package:lightning_node_repository/src/models/node_config.dart';
+import 'package:lightning_node_repository/src/models/balance.dart';
+
 import 'package:path_provider/path_provider.dart';
-
-/// Bitcoin network enum
-enum Network {
-  ///Classic Bitcoin
-  bitcoin,
-
-  ///Bitcoin’s testnet
-  testnet,
-
-  ///Bitcoin’s signet
-  signet,
-
-  ///Bitcoin’s regtest
-  regtest,
-}
-
-// Extension to be able to map the exposed Network enum onto ldk_node's Network enum.
-// This way the lightning_node_repository enum can be used in the app code without it needing to know about ldk_node.
-extension NetworkX on Network {
-  ldk.Network get ldkNetwork {
-    switch (this) {
-      case Network.bitcoin:
-        return ldk.Network.bitcoin;
-      case Network.testnet:
-        return ldk.Network.testnet;
-      case Network.signet:
-        return ldk.Network.testnet;
-      case Network.regtest:
-        return ldk.Network.regtest;
-    }
-  }
-
-  bdk.Network get bdkNetwork {
-    switch (this) {
-      case Network.bitcoin:
-        return bdk.Network.Bitcoin;
-      case Network.testnet:
-        return bdk.Network.Testnet;
-      case Network.signet:
-        return bdk.Network.Testnet;
-      case Network.regtest:
-        return bdk.Network.Regtest;
-    }
-  }
-}
+import 'package:ldk_node/ldk_node.dart' as ldk;
 
 class LightningNodeRepository {
-  late ldk.Node _node;
+  // Instance fields and properties
+  late final ldk.Node _node;
 
-  Future<String> get nodeId async {
-    final publicKey = await _node.nodeId();
-    return publicKey.keyHex;
-  }
-
+  // Instance methods
   Future<void> startNodeWithSeedBytes(
       {required List<int> seedBytes, Network network = Network.regtest}) async {
     ldk.Builder builder = await _getNodeBuilder(network: network);
@@ -79,60 +36,90 @@ class LightningNodeRepository {
     await _node.stop();
   }
 
-  Future<bool> isNodeRunning() async {
-    return Future.value(false);
+  Future<void> setConfig(NodeConfig config) async {
+    await _saveConfig(config);
   }
 
+  // Getters and setters
+  Future<String> get nodeId async {
+    final publicKey = await _node.nodeId();
+    return publicKey.keyHex;
+  }
+
+  Future<Balance> get balance async {
+    final onChainBalance = await _node.onChainBalance();
+    final channels = await _node.listChannels();
+    final totalOutboundCapacity = channels.fold(
+      0,
+      (summedOutboundCapacity, channel) =>
+          summedOutboundCapacity + channel.outboundCapacityMsat,
+    );
+    return Balance(
+      totalOutboundCapacity: totalOutboundCapacity,
+      confirmed: onChainBalance.confirmed,
+      untrustedPending: onChainBalance.untrustedPending,
+      immature: onChainBalance.immature,
+      trustedPending: onChainBalance.trustedPending,
+    );
+  }
+
+  // Private instance methods
   Future<ldk.Builder> _getNodeBuilder(
       {Network network = Network.regtest}) async {
     final config = await _getConfig(network: network);
-    ldk.Builder builder = ldk.Builder.fromConfig(config: config);
+    ldk.Builder builder = ldk.Builder.fromConfig(config: config.ldkNodeConfig);
     return builder;
   }
 
-  Future<ldk.Config> _getConfig({Network network = Network.regtest}) async {
-    // Todo: Check if config is stored in shared preferences, if not, return default config
-    final config = await _getDefaultConfig(network: network);
-    return config;
+  Future<NodeConfig> _getConfig({Network network = Network.regtest}) async {
+    // Try to get a previously stored config file, if not present,
+    //  fallback to a default config
+    try {
+      final file = await _getConfigFile();
+      // Read from file
+      String serializedJsonStringConfig = await file.readAsString();
+      // Deserialize JSON to Config object
+      return NodeConfig.fromJsonString(serializedJsonStringConfig);
+    } catch (e) {
+      return _getDefaultConfig(network: network);
+    }
   }
 
-  Future<ldk.Config> _getDefaultConfig(
-      {Network network = Network.regtest}) async {
+  Future<NodeConfig> _getDefaultConfig({
+    Network network = Network.regtest,
+  }) async {
     String nodePath =
         await _localPath(); // Path where the node will store its data
-    String esploraUrl; // Electrum RPC Api url
-    ldk.SocketAddr address; // Lightning P2P listening address
     switch (network) {
       case Network.bitcoin:
-        address = const ldk.SocketAddr(ip: "0.0.0.0", port: 9735);
-        esploraUrl = "https://blockstream.info/api";
+        return NodeConfig.forBitcoin(storageDirPath: nodePath);
       case Network.testnet:
-        address = const ldk.SocketAddr(ip: "0.0.0.0", port: 19735);
-        esploraUrl = "https://blockstream.info/testnet/api";
+        return NodeConfig.forTestnet(storageDirPath: nodePath);
       case Network.signet:
-        throw UnimplementedError();
+        throw UnimplementedError('Signet network is not supported yet.');
       case Network.regtest:
-        address = const ldk.SocketAddr(ip: "0.0.0.0", port: 19846);
-        esploraUrl = "http://127.0.0.1:18443";
+        return NodeConfig.forRegtest(storageDirPath: nodePath);
       //esploraUrl = Platform.isAndroid ? "http://10.0.2.2:3002" : "http://0.0.0.0:3002"; // Please use 10.0.2.2, instead of 0.0.0.0
+      default:
+        throw ArgumentError('Invalid network: $network');
     }
-
-    final config = ldk.Config(
-        storageDirPath: nodePath,
-        esploraServerUrl: esploraUrl,
-        network: network.ldkNetwork,
-        listeningAddress: address,
-        defaultCltvExpiryDelta: 144);
-    return config;
   }
 
-  Future<void> _saveConfig({required ldk.Config config}) async {
-    // Save config to shared preferences
+  Future<void> _saveConfig(NodeConfig config) async {
+    // Serialize config to JSON
+    String serializedConfig = jsonEncode(config.toJson());
+    // Write JSON to file
+    final file = await _getConfigFile();
+    await file.writeAsString(serializedConfig);
   }
 
   Future<String> _localPath() async {
     final directory = await getApplicationDocumentsDirectory();
 
     return directory.path;
+  }
+
+  Future<File> _getConfigFile() async {
+    return File('${await _localPath()}/config.json');
   }
 }

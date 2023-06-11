@@ -34,9 +34,10 @@ Future<void> main() async {
 
   // If mnemonic exists, start the node already
   if (await seedRepository.doesMnemonicExist()) {
-    // Check if the node is already running before trying to start it
-    if (!(await lightningNodeRepository.isNodeRunning())) {
-      lightningNodeBloc.add(LightningNodeStarted(network: networkCubit.state));
-    }
+    // Todo: Check if the node is already running before trying to start it
+    // Is this really necessarry? The node should be stopped only when the app is terminated.
+    //if (!(await lightningNodeRepository.isNodeRunning())) {
+    lightningNodeBloc.add(LightningNodeStarted(network: networkCubit.state));
+    //}
   }
 }
