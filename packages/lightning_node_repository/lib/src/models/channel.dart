@@ -1,3 +1,5 @@
+import 'package:ldk_node/ldk_node.dart';
+
 class Channel {
   const Channel(
       {required this.channelId,
@@ -8,7 +10,7 @@ class Channel {
   /// thereafter this is the txid of the funding transaction xor the funding transaction output).
   /// Note that this means this value is *not* persistent - it can change once during the
   /// lifetime of the channel.
-  final String channelId;
+  final U8Array32 channelId;
 
   /// The available outbound capacity for sending HTLCs to the remote peer. This does not include
   /// any pending HTLCs which are not yet fully resolved (and, thus, whose balance is not
