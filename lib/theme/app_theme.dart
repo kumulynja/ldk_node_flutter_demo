@@ -30,8 +30,8 @@ class AppTheme {
         onError: Colors.white,
         background: Colors.white,
         onBackground: russianViolet,
-        surface: Colors.white,
-        onSurface: blueViolet,
+        surface: orange,
+        onSurface: Colors.white,
       ),
       textTheme: const TextTheme(
         displayLarge: TextStyle(

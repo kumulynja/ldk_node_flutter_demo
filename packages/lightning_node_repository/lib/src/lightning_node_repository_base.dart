@@ -49,6 +49,36 @@ class LightningNodeRepository {
     _shouldListenToEvents = false;
   }
 
+  Future<void> connectOpenChannel({
+    required String addressIp,
+    required int addressPort,
+    required String counterpartyPublicKey,
+    required int channelAmountSats,
+    int? pushToCounterpartyMsat,
+    required bool announceChannel,
+  }) async {
+    ldk.SocketAddr address = ldk.SocketAddr(ip: addressIp, port: addressPort);
+    ldk.PublicKey nodeId = ldk.PublicKey(keyHex: counterpartyPublicKey);
+    await _node.connectOpenChannel(
+      address: address,
+      nodeId: nodeId,
+      channelAmountSats: channelAmountSats,
+      announceChannel: announceChannel,
+      pushToCounterpartyMsat: pushToCounterpartyMsat,
+    );
+  }
+
+  Future<void> closeChannel({
+    required ldk.U8Array32 channelId,
+    required String counterpartyPublicKey,
+    dynamic hint,
+  }) async {
+    ldk.PublicKey counterpartyNodeId =
+        ldk.PublicKey(keyHex: counterpartyPublicKey);
+    await _node.closeChannel(
+        channelId: channelId, counterpartyNodeId: counterpartyNodeId);
+  }
+
   Future<void> setConfig(NodeConfig config) async {
     await _saveConfig(config);
   }

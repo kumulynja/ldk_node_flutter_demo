@@ -19,12 +19,10 @@ class LightningNodeBloc extends Bloc<LightningNodeEvent, LightningNodeState> {
 
   final LightningNodeRepository _lightningNodeRepository;
   final SeedRepository _seedRepository;
-  //late ldk.Node node;
-  //ldk.Config config;
 
   @override
   Future<void> close() {
-    //snode.stop();
+    //await _lightningNodeRepository.stop();
     return super.close();
   }
 

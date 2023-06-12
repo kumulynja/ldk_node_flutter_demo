@@ -24,14 +24,7 @@ Future<void> main() async {
   // @dev The following line is just for testing purposes
   // Delete stored mnemonic to start with onboarding.
   // Comment it out to keep the already stored mnemonic and skip onboarding.
-  await seedRepository.deleteMnemonic();
-
-  runApp(App(
-    seedRepository: seedRepository,
-    lightningNodeRepository: lightningNodeRepository,
-    networkCubit: networkCubit,
-    lightningNodeBloc: lightningNodeBloc,
-  ));
+  // await seedRepository.deleteMnemonic();
 
   // If mnemonic exists, start the node already
   if (await seedRepository.doesMnemonicExist()) {
@@ -41,4 +34,11 @@ Future<void> main() async {
     lightningNodeBloc.add(LightningNodeStarted(network: networkCubit.state));
     //}
   }
+
+  runApp(App(
+    seedRepository: seedRepository,
+    lightningNodeRepository: lightningNodeRepository,
+    networkCubit: networkCubit,
+    lightningNodeBloc: lightningNodeBloc,
+  ));
 }
