@@ -13,9 +13,25 @@ class LightningWalletHomeScreen extends StatelessWidget {
     return Scaffold(
       body: BlocBuilder<LightningNodeBloc, LightningNodeState>(
         bloc: lightningNodeBloc,
-        builder: (context, state) => Text(state is LightningNodeRunSuccess
-            ? 'Running node ${state.nodeId} on network ${state.network.toString()}'
-            : 'Loading...'),
+        builder: (context, state) => Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(16, 48, 16, 0),
+              child: Column(children: [
+                Container(
+                  child: Column(
+                    children: [
+                      Text(state is LightningNodeRunSuccess
+                          ? 'Running node ${state.nodeId} on network ${state.network.toString()}'
+                          : 'Loading...'),
+                    ],
+                  ),
+                ),
+              ]),
+            )
+          ],
+        ),
       ),
     );
   }

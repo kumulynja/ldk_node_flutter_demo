@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -6,8 +7,10 @@ import 'package:lightning_node_repository/src/enums/network.dart';
 import 'package:lightning_node_repository/src/ldk/channel_details_extension.dart';
 import 'package:lightning_node_repository/src/ldk/node_config_extension.dart';
 import 'package:lightning_node_repository/src/models/channel.dart';
+import 'package:lightning_node_repository/src/models/channel_events.dart';
 import 'package:lightning_node_repository/src/models/node_config.dart';
 import 'package:lightning_node_repository/src/models/balance.dart';
+import 'package:lightning_node_repository/src/models/payment_events.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:ldk_node/ldk_node.dart' as ldk;
@@ -15,6 +18,15 @@ import 'package:ldk_node/ldk_node.dart' as ldk;
 class LightningNodeRepository {
   // Instance fields and properties
   late final ldk.Node _node;
+  bool _shouldListenToEvents = true;
+
+  final StreamController<PaymentEvent> _paymentController =
+      StreamController.broadcast();
+  final StreamController<ChannelEvent> _channelController =
+      StreamController.broadcast();
+
+  Stream<PaymentEvent> get paymentStream => _paymentController.stream;
+  Stream<ChannelEvent> get channelStream => _channelController.stream;
 
   // Instance methods
   Future<void> startNodeWithSeedBytes(
@@ -22,20 +34,19 @@ class LightningNodeRepository {
     ldk.Builder builder = await _getNodeBuilder(network: network);
     await builder.setEntropySeedBytes(
         seedBytes: ldk.U8Array64(Uint8List.fromList(seedBytes)));
-    _node = await builder.build();
-    await _node.start();
+    await _startNode(builder);
   }
 
   Future<void> startNodeWithMnemonic(
       {required String mnemonic, Network network = Network.regtest}) async {
     ldk.Builder builder = await _getNodeBuilder(network: network);
     await builder.setEntropyBip39Mnemonic(mnemonic: mnemonic);
-    _node = await builder.build();
-    await _node.start();
+    await _startNode(builder);
   }
 
   Future<void> stopNode() async {
     await _node.stop();
+    _shouldListenToEvents = false;
   }
 
   Future<void> setConfig(NodeConfig config) async {
@@ -82,6 +93,53 @@ class LightningNodeRepository {
     ldk.Builder builder =
         ldk.Builder.fromConfig(config: config.asLdkNodeConfig);
     return builder;
+  }
+
+  Future<void> _startNode(ldk.Builder builder) async {
+    _node = await builder.build();
+    await _node.start();
+    // Start listening to node events
+    _listenToNodeEvents();
+  }
+
+  void _listenToNodeEvents() async {
+    // Wrap the entire content of the method in a Future to run it in the background
+    Future(() async {
+      while (_shouldListenToEvents) {
+        try {
+          final res = await _node.nextEvent();
+          res.map(paymentSuccessful: (e) {
+            _paymentController.sink
+                .add(PaymentSuccessful(e.paymentHash.field0));
+          }, paymentFailed: (e) {
+            _paymentController.sink.add(PaymentFailed(e.paymentHash.field0));
+          }, paymentReceived: (e) {
+            _paymentController.sink
+                .add(PaymentReceived(e.paymentHash.field0, e.amountMsat));
+          }, channelReady: (e) {
+            _channelController.sink
+                .add(ChannelReady(e.channelId, e.userChannelId));
+          }, channelClosed: (e) {
+            _channelController.sink
+                .add(ChannelClosed(e.channelId, e.userChannelId));
+          }, channelPending: (e) {
+            _channelController.sink.add(ChannelPending(
+              e.channelId,
+              e.userChannelId,
+              e.formerTemporaryChannelId,
+              e.counterpartyNodeId.keyHex,
+              e.fundingTxo.txid.field0,
+              e.fundingTxo.vout,
+            ));
+          });
+
+          await _node.eventHandled();
+        } catch (e) {
+          // Handle or log the exception
+          print('Error while listening to node events: $e');
+        }
+      }
+    });
   }
 
   Future<NodeConfig> _getConfig({Network network = Network.regtest}) async {

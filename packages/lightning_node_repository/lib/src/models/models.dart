@@ -2,4 +2,6 @@
 export 'node_config.dart';
 export 'balance.dart';
 export 'channel.dart';
+export 'channel_events.dart';
+export 'payment_events.dart';
 //export 'payment.dart';
