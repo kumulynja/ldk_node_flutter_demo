@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightning_node_repository/lightning_node_repository.dart';
 
-class BalanceCubit extends Cubit<int> {
-  BalanceCubit({
+class LightningBalanceCubit extends Cubit<int> {
+  LightningBalanceCubit({
     required LightningNodeRepository lightningNodeRepository,
   })  : _lightningNodeRepository = lightningNodeRepository,
         super(0) {

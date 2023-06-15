@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ldk_node_flutter_demo/blocs/lightning_balance/lightning_balance_cubit.dart';
-import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_state.dart';
-import 'package:lightning_node_repository/lightning_node_repository.dart';
 
 class WalletInfoContainer extends StatelessWidget {
-  final LightningNodeState lightningNodeState;
-  final LightningNodeRepository lightningNodeRepository;
+  final String walletName;
+  final Color containerColor;
+  final bool isSyncing;
+  final int? balance;
+  final String? unit;
+  final String?
+      balanceLabel; // e.j. 'spendable' for Lightning, 'saved' for Bitcoin
+  final String? network;
 
   const WalletInfoContainer({
     super.key,
-    required this.lightningNodeState,
-    required this.lightningNodeRepository,
+    required this.walletName,
+    required this.containerColor,
+    this.isSyncing = false,
+    this.balance,
+    this.unit,
+    this.balanceLabel,
+    this.network,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: containerColor,
         boxShadow: const [
           BoxShadow(
             blurRadius: 5,
@@ -47,7 +54,7 @@ class WalletInfoContainer extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(0, 4, 0, 0),
                       child: Text(
-                        'Lightning Wallet',
+                        walletName,
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -60,48 +67,42 @@ class WalletInfoContainer extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 20, 0),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
-                    child: lightningNodeState is LightningNodeRunSuccess
-                        ? BlocBuilder<BalanceCubit, int>(
-                            bloc: BalanceCubit(
-                              lightningNodeRepository: lightningNodeRepository,
+            isSyncing
+                ? const CircularProgressIndicator()
+                : Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 20, 0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding:
+                              const EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
+                          child: Text(
+                            '$balance $unit',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.normal,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
-                            builder: (BuildContext context, state) {
-                              return Text(
-                                '$state SAT',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.normal,
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
-                                ),
-                                textAlign: TextAlign.start,
-                              );
-                            },
-                          )
-                        : const CircularProgressIndicator(),
-                  ),
-                  Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(8, 0, 0, 4),
-                      child: Text(
-                        'spendable',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal,
-                          color: Theme.of(context).colorScheme.onSurface,
+                            textAlign: TextAlign.start,
+                          ),
                         ),
-                        textAlign: TextAlign.start,
-                      )),
-                ],
-              ),
-            ),
+                        Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                8, 0, 0, 4),
+                            child: Text(
+                              balanceLabel ?? '',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.normal,
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
+                              textAlign: TextAlign.start,
+                            )),
+                      ],
+                    ),
+                  ),
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 20, 0),
               child: Row(
@@ -121,11 +122,7 @@ class WalletInfoContainer extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      lightningNodeState is LightningNodeRunSuccess
-                          ? (lightningNodeState as LightningNodeRunSuccess)
-                              .network
-                              .name
-                          : '',
+                      network ?? '',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.normal,
@@ -134,39 +131,6 @@ class WalletInfoContainer extends StatelessWidget {
                       textAlign: TextAlign.start,
                     ),
                   ]),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(0, 0, 4, 0),
-                        child: Text(
-                          'Node Id',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.normal,
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 100,
-                        child: Text(
-                          lightningNodeState is LightningNodeRunSuccess
-                              ? (lightningNodeState as LightningNodeRunSuccess)
-                                  .nodeId
-                              : '',
-                          style: TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                            fontSize: 16,
-                            fontWeight: FontWeight.normal,
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                          textAlign: TextAlign.right,
-                        ),
-                      ),
-                    ],
-                  )
                 ],
               ),
             ),
