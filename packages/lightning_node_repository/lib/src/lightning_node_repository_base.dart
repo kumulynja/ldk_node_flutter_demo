@@ -18,7 +18,7 @@ import 'package:ldk_node/ldk_node.dart' as ldk;
 class LightningNodeRepository {
   // Instance fields and properties
   late final ldk.Node _node;
-  bool _shouldListenToEvents = true;
+  //bool _shouldListenToEvents = true;
 
   final StreamController<PaymentEvent> _paymentController =
       StreamController.broadcast();
@@ -46,7 +46,7 @@ class LightningNodeRepository {
 
   Future<void> stopNode() async {
     await _node.stop();
-    _shouldListenToEvents = false;
+    //_shouldListenToEvents = false;
   }
 
   Future<void> connectOpenChannel({
@@ -129,49 +129,64 @@ class LightningNodeRepository {
     _node = await builder.build();
     await _node.start();
     // Start listening to node events
-    _listenToNodeEvents();
+    //_listenToNodeEvents();
   }
 
+  /**
   void _listenToNodeEvents() async {
     // Wrap the entire content of the method in a Future to run it in the background
     Future(() async {
       while (_shouldListenToEvents) {
+        print("SHOULD LISTEN TO EVENTS");
         try {
+          print('NEXT EVENT');
           final res = await _node.nextEvent();
-          res.map(paymentSuccessful: (e) {
-            _paymentController.sink
-                .add(PaymentSuccessful(e.paymentHash.field0));
-          }, paymentFailed: (e) {
-            _paymentController.sink.add(PaymentFailed(e.paymentHash.field0));
-          }, paymentReceived: (e) {
-            _paymentController.sink
-                .add(PaymentReceived(e.paymentHash.field0, e.amountMsat));
-          }, channelReady: (e) {
-            _channelController.sink
-                .add(ChannelReady(e.channelId, e.userChannelId));
-          }, channelClosed: (e) {
-            _channelController.sink
-                .add(ChannelClosed(e.channelId, e.userChannelId));
-          }, channelPending: (e) {
-            _channelController.sink.add(ChannelPending(
-              e.channelId,
-              e.userChannelId,
-              e.formerTemporaryChannelId,
-              e.counterpartyNodeId.keyHex,
-              e.fundingTxo.txid.field0,
-              e.fundingTxo.vout,
-            ));
-          });
-
+          res.map(
+            paymentSuccessful: (e) {
+              _paymentController.sink
+                  .add(PaymentSuccessful(e.paymentHash.field0));
+            },
+            paymentFailed: (e) {
+              _paymentController.sink.add(PaymentFailed(e.paymentHash.field0));
+            },
+            paymentReceived: (e) {
+              _paymentController.sink
+                  .add(PaymentReceived(e.paymentHash.field0, e.amountMsat));
+            },
+            channelReady: (e) {
+              _channelController.sink
+                  .add(ChannelReady(e.channelId, e.userChannelId));
+            },
+            channelClosed: (e) {
+              _channelController.sink
+                  .add(ChannelClosed(e.channelId, e.userChannelId));
+            },
+            channelPending: (e) {
+              _channelController.sink.add(ChannelPending(
+                e.channelId,
+                e.userChannelId,
+                e.formerTemporaryChannelId,
+                e.counterpartyNodeId.keyHex,
+                e.fundingTxo.txid.field0,
+                e.fundingTxo.vout,
+              ));
+            },
+          );
+          print('EVENT HANDLED');
           await _node.eventHandled();
+          // Optionally, introduce a delay to avoid tight-loop polling
+          print('Delaying...');
+          await Future.delayed(Duration(milliseconds: 100));
         } catch (e) {
           // Handle or log the exception
           print('Error while listening to node events: $e');
+          // Optionally, introduce a delay to avoid tight-loop polling
+          await Future.delayed(Duration(milliseconds: 100));
         }
       }
     });
   }
-
+  */
   Future<NodeConfig> _getConfig({Network network = Network.regtest}) async {
     final file = await _getConfigFile();
 

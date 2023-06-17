@@ -8,6 +8,7 @@ import 'package:ldk_node_flutter_demo/screens/onboarding/create_wallet_screen.da
 import 'package:ldk_node_flutter_demo/screens/onboarding/onboarding_completed_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/onboarding/mnemonic_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/onboarding/recovery_screen.dart';
+import 'package:ldk_node_flutter_demo/screens/splash_screen.dart';
 import 'package:ldk_node_flutter_demo/theme/app_theme.dart';
 import 'package:lightning_node_repository/lightning_node_repository.dart';
 import 'package:seed_repository/seed_repository.dart';
@@ -51,20 +52,21 @@ class AppState extends State<App> {
       routes: <RouteBase>[
         GoRoute(
           path: '/',
-          name: 'home',
+          name: 'splash',
           pageBuilder: (BuildContext context, GoRouterState state) {
             return const MaterialPage(
-              child: LightningWalletHomeScreen(),
+              child: SplashScreen(),
             );
           },
           redirect: (BuildContext context, GoRouterState state) async {
             if (state.location == '/') {
               // Only redirect if it's a top-level route
-              if (!(await widget._seedRepository.doesMnemonicExist())) {
-                // If no mnemonic exists, onboarding should be done to create
-                //  or restore one.
-                return '/onboarding';
+              if (await widget._seedRepository.doesMnemonicExist()) {
+                return '/lightning';
               }
+              // If no mnemonic exists, onboarding should be done to create
+              //  or restore one.
+              return '/onboarding';
             }
             return null;
           },
@@ -107,6 +109,19 @@ class AppState extends State<App> {
                 ),
               ],
             ),
+          ],
+        ),
+        // Top-level route for Lightning Wallet
+        GoRoute(
+          path: '/lightning',
+          name: 'lightning',
+          pageBuilder: (BuildContext context, GoRouterState state) {
+            return const MaterialPage(
+              child: LightningWalletHomeScreen(),
+            );
+          },
+          routes: const [
+            // Define subroutes for Lightning Wallet here.
           ],
         ),
       ],
