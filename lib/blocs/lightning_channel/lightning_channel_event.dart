@@ -1,10 +1,10 @@
 import 'package:lightning_node_repository/lightning_node_repository.dart';
 
-abstract class LightningChannelsEvent {}
+abstract class LightningChannelEvent {}
 
-class LightningChannelsStarted extends LightningChannelsEvent {}
+class LightningChannelStarted extends LightningChannelEvent {}
 
-class LightningChannelOpeningRequested extends LightningChannelsEvent {
+class LightningChannelOpeningRequested extends LightningChannelEvent {
   final String addressIp;
   final int addressPort;
   final String counterpartyPublicKey;
@@ -20,7 +20,7 @@ class LightningChannelOpeningRequested extends LightningChannelsEvent {
   });
 }
 
-class LightningChannelClosingRequested extends LightningChannelsEvent {
+class LightningChannelClosingRequested extends LightningChannelEvent {
   final U8Array32 channelId;
   final String counterpartyPublicKey;
 
@@ -30,19 +30,19 @@ class LightningChannelClosingRequested extends LightningChannelsEvent {
   });
 }
 
-class LightningChannelOpened extends LightningChannelsEvent {
+class LightningChannelOpened extends LightningChannelEvent {
   final Channel channel;
 
   LightningChannelOpened({required this.channel});
 }
 
-class LightningChannelClosed extends LightningChannelsEvent {
+class LightningChannelClosed extends LightningChannelEvent {
   final Channel channel;
 
   LightningChannelClosed({required this.channel});
 }
 
-class LightningChannelPending extends LightningChannelsEvent {
+class LightningChannelPending extends LightningChannelEvent {
   final Channel channel;
 
   LightningChannelPending({required this.channel});

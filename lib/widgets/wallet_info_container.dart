@@ -4,6 +4,7 @@ class WalletInfoContainer extends StatelessWidget {
   final String walletName;
   final Color containerColor;
   final bool isSyncing;
+  final VoidCallback? onRefresh;
   final int? balance;
   final String? unit;
   final String?
@@ -19,6 +20,7 @@ class WalletInfoContainer extends StatelessWidget {
     this.unit,
     this.balanceLabel,
     this.network,
+    this.onRefresh,
   });
 
   @override
@@ -64,6 +66,13 @@ class WalletInfoContainer extends StatelessWidget {
                       ),
                     ),
                   ),
+                  onRefresh != null
+                      ? IconButton(
+                          icon: const Icon(Icons.refresh),
+                          color: Theme.of(context).colorScheme.onSurface,
+                          onPressed: onRefresh,
+                        )
+                      : const SizedBox.shrink(),
                 ],
               ),
             ),
@@ -113,7 +122,7 @@ class WalletInfoContainer extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 4, 0),
                       child: Text(
-                        'Network',
+                        network ?? 'Network',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.normal,

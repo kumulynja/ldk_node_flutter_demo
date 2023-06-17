@@ -20,18 +20,19 @@ class MnemonicScreen extends StatelessWidget {
       )..add(MnemonicGenerationPressed()),
       child: Scaffold(
         body: BlocListener<MnemonicBloc, MnemonicState>(
-          // Separate consequences of changes in the bloc, like navigation here, in a BlocListener
-          // so the BlocBuilder is only concerned with the UI.
+          // Separate consequences of changes in the bloc, like navigation here,
+          //  in a BlocListener so the BlocBuilder is only concerned with UI.
           listener: (context, state) {
             if (state is MnemonicStoreSuccess) {
               // The mnemonic is stored successfully
-              // Start the Lightning node and navigate to the home screen
+              // Start the Lightning node and navigate to the lightning wallet's
+              //  home screen
               context.read<LightningNodeBloc>().add(
                     LightningNodeStarted(
                       network: context.read<NetworkCubit>().state,
                     ),
                   );
-              context.goNamed('home');
+              context.goNamed('lightning');
             }
           },
           child: BlocBuilder<MnemonicBloc, MnemonicState>(

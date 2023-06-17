@@ -15,7 +15,8 @@ Future<void> main() async {
   final lightningNodeRepository = LightningNodeRepository();
   // Create BloCs
   final networkCubit = NetworkCubit(
-      AppNetwork.regtest); // Change this to Network.Bitcoin in production
+    AppNetwork.regtest,
+  ); // Change this to Network.Bitcoin in production
   final lightningNodeBloc = LightningNodeBloc(
     lightningNodeRepository: lightningNodeRepository,
     seedRepository: seedRepository,
