@@ -15,7 +15,7 @@ Future<void> main() async {
   final lightningNodeRepository = LightningNodeRepository();
   // Create BloCs
   final networkCubit = NetworkCubit(
-      AppNetwork.regtest); // Change this to Network.Bitcoin in production
+      AppNetwork.testnet); // Change this to Network.Bitcoin in production
   final lightningNodeBloc = LightningNodeBloc(
     lightningNodeRepository: lightningNodeRepository,
     seedRepository: seedRepository,
@@ -24,7 +24,7 @@ Future<void> main() async {
   // @dev The following line is just for testing purposes
   // Delete stored mnemonic to start with onboarding.
   // Comment it out to keep the already stored mnemonic and skip onboarding.
-  // await seedRepository.deleteMnemonic();
+  await seedRepository.deleteMnemonic();
 
   // If mnemonic exists, start the node already
   if (await seedRepository.doesMnemonicExist()) {

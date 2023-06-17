@@ -95,13 +95,20 @@ class LightningNodeRepository {
   }
 
   Future<Balance> get balance async {
-    final onChainBalance = await _node.onChainBalance();
+    print('Getting balance');
+    print('IS HERE');
+    print('nodeId: ${await nodeId}');
+    print('NOT HERE');
     final channels = await _node.listChannels();
+    print('Channels: $channels');
     final totalOutboundCapacity = channels.fold(
       0,
       (summedOutboundCapacity, channel) =>
           summedOutboundCapacity + channel.outboundCapacityMsat,
     );
+    print('Outbound: $totalOutboundCapacity');
+    final onChainBalance = await _node.onChainBalance();
+    print('On chain balance: $onChainBalance');
     return Balance(
       totalOutboundCapacity: totalOutboundCapacity,
       confirmed: onChainBalance.confirmed,

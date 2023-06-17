@@ -18,14 +18,28 @@ class LightningNodeRunSuccess extends LightningNodeState {
   const LightningNodeRunSuccess({
     required this.network,
     required this.nodeId,
+    required this.balance,
     String? alias,
   }) : super(alias: alias);
 
   final AppNetwork network;
   final String nodeId;
+  final int balance;
+
+  LightningNodeRunSuccess copyWith({
+    AppNetwork? network,
+    String? nodeId,
+    int? balance,
+  }) {
+    return LightningNodeRunSuccess(
+      network: network ?? this.network,
+      nodeId: nodeId ?? this.nodeId,
+      balance: balance ?? this.balance,
+    );
+  }
 
   @override
-  List<Object?> get props => [network, nodeId, alias];
+  List<Object?> get props => [network, nodeId, balance];
 }
 
 class LightningNodeRunFailure extends LightningNodeState {

@@ -113,7 +113,7 @@ class WalletInfoContainer extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 4, 0),
                       child: Text(
-                        'Network',
+                        network ?? 'Network',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.normal,
