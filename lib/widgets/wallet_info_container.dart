@@ -5,7 +5,7 @@ class WalletInfoContainer extends StatelessWidget {
   final Color containerColor;
   final bool isSyncing;
   final VoidCallback? onRefresh;
-  final int? balance;
+  final double? balance;
   final String? unit;
   final String?
       balanceLabel; // e.j. 'spendable' for Lightning, 'saved' for Bitcoin
@@ -82,7 +82,7 @@ class WalletInfoContainer extends StatelessWidget {
                           padding:
                               const EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
                           child: Text(
-                            '$balance $unit',
+                            '${balance?.round()} $unit',
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.normal,

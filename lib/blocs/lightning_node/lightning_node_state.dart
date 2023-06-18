@@ -44,8 +44,12 @@ class LightningNodeRunSuccess extends LightningNodeState {
       channels.where((channel) => channel.isUsable).length;
   int get inActiveChannelCount =>
       channels.where((channel) => !channel.isUsable).length;
-  int get totalOutBoundCapacity =>
+  int get totalOutBoundCapacityMsat =>
       channels.fold(0, (sum, channel) => sum + channel.outboundCapacityMsat);
+  double get confirmedOnChainBalanceBtc =>
+      onChainBalance.confirmed / 100000000; // 1 BTC = 100,000,000 sats
+  double get totalOutBoundCapacitySat =>
+      totalOutBoundCapacityMsat / 1000; // 1 sat = 1000 msats
 
   @override
   List<Object?> get props => [network, nodeId, onChainBalance, channels];
