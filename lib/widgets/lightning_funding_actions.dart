@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class LightningFundingActions extends StatelessWidget {
-  final int confirmedOnChainBalance;
+  final double confirmedOnChainBalance;
   final int nrOfActiveChannels;
   final int nrOfInactiveChannels;
 
@@ -25,7 +25,7 @@ class LightningFundingActions extends StatelessWidget {
           children: [
             buildActionColumn(
               '$confirmedOnChainBalance',
-              'Bitcoin',
+              'BTC',
               'Fund',
               () => GoRouter.of(context).pushNamed('fund-on-chain'),
             ),

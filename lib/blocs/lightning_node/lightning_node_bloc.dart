@@ -81,6 +81,11 @@ class LightningNodeBloc extends Bloc<LightningNodeEvent, LightningNodeState> {
   ) async {
     if (state is LightningNodeRunSuccess) {
       final onChainBalance = await _lightningNodeRepository.onChainBalance;
+      print(
+          'onChainBalance untrustedPending: ${onChainBalance.untrustedPending}');
+      print('onChainBalance trustedPending: ${onChainBalance.trustedPending}');
+      print('onChainBalance confirmed: ${onChainBalance.confirmed}');
+      print('onChainBalance immature: ${onChainBalance.immature}');
       final channels = await _lightningNodeRepository.channels;
       emit((state as LightningNodeRunSuccess).copyWith(
         onChainBalance: onChainBalance,

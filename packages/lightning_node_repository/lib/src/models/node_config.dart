@@ -53,7 +53,7 @@ class NodeConfig {
 
   NodeConfig.forRegtest({
     required String storageDirPath,
-    String esploraServerUrl = 'http://127.0.0.1:18443',
+    String esploraServerUrl = 'http://127.0.0.1:18444',
     String listeningAddressIp = '0.0.0.0',
     int listeningAddressPort = 19846,
     int defaultCltvExpiryDelta = 144,
