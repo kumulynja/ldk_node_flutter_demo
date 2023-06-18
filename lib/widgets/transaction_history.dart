@@ -7,6 +7,6 @@ class TransactionHistory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text("TransactionHistory Placeholder");
+    return const Text("No transactions yet.");
   }
 }

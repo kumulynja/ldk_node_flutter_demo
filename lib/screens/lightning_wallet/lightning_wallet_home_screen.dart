@@ -17,33 +17,60 @@ class LightningWalletHomeScreen extends StatefulWidget {
 }
 
 class LightningWalletHomeScreenState extends State<LightningWalletHomeScreen> {
-  final List<bool> _isOpen = [
-    false,
-    false,
-    true
-  ]; // Start with Transaction History open
+  late final LightningNodeBloc _lightningNodeBloc;
+  final List<bool> _isOpen = [true, true, true];
+
+  @override
+  void initState() {
+    super.initState();
+    _lightningNodeBloc = BlocProvider.of<LightningNodeBloc>(context);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Perform actions every time the screen comes into view
+    _lightningNodeBloc.add(const LightningNodeRefreshed());
+  }
 
   void _togglePanel(int index) {
-    // Make sure only one panel is open at a time
     setState(() {
-      for (int i = 0; i < _isOpen.length; i++) {
-        if (i != index) {
-          _isOpen[i] = false;
-        } else {
-          _isOpen[i] = !_isOpen[i];
-        }
-      }
+      // The commented lines are if you want to make sure
+      //  only one panel is open at a time
+      //for (int i = 0; i < _isOpen.length; i++) {
+      //if (i != index) {
+      //_isOpen[i] = false;
+      //} else {
+      _isOpen[index] = !_isOpen[index];
+      //}
+      // }
     });
+  }
+
+  ExpansionPanel _buildExpansionPanel(int index, String title, Widget body) {
+    return ExpansionPanel(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      headerBuilder: (BuildContext context, bool isExpanded) {
+        return ListTile(
+          title: Text(title),
+        );
+      },
+      body: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16.0,
+        ),
+        child: body,
+      ),
+      isExpanded: _isOpen[index],
+      canTapOnHeader: true,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final lightningNodeBloc = BlocProvider.of<LightningNodeBloc>(context);
-    lightningNodeBloc.add(const LightningNodeRefreshed());
-
     return Scaffold(
       body: BlocBuilder<LightningNodeBloc, LightningNodeState>(
-        bloc: lightningNodeBloc,
+        bloc: _lightningNodeBloc,
         builder: (context, state) => Column(
           mainAxisSize: MainAxisSize.max,
           children: [
@@ -51,7 +78,7 @@ class LightningWalletHomeScreenState extends State<LightningWalletHomeScreen> {
               walletName: 'Lightning Wallet',
               containerColor: Theme.of(context).colorScheme.surface,
               isSyncing: state is! LightningNodeRunSuccess,
-              onRefresh: () => lightningNodeBloc.add(
+              onRefresh: () => _lightningNodeBloc.add(
                 const LightningNodeRefreshed(),
               ),
               balance: state is LightningNodeRunSuccess ? state.balance : null,
@@ -61,50 +88,29 @@ class LightningWalletHomeScreenState extends State<LightningWalletHomeScreen> {
                   state is LightningNodeRunSuccess ? state.network.name : null,
             ),
             Expanded(
-              child: ListView(
-                padding: const EdgeInsetsDirectional.only(top: 0),
-                children: [
-                  ExpansionPanelList(
-                    expansionCallback: (int index, bool isExpanded) {
-                      _togglePanel(index);
-                    },
-                    children: [
-                      ExpansionPanel(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.background,
-                        headerBuilder: (BuildContext context, bool isExpanded) {
-                          return const Text('Funding Actions');
-                        },
-                        body:
-                            const LightningFundingActions(), // Custom Widget for Funding Actions
-                        isExpanded: _isOpen[0],
-                        canTapOnHeader: true,
-                      ),
-                      ExpansionPanel(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.background,
-                        headerBuilder: (BuildContext context, bool isExpanded) {
-                          return const Text('Payment Actions');
-                        },
-                        body:
-                            const LightningPaymentActions(), // Custom Widget for Payment Actions
-                        isExpanded: _isOpen[1],
-                        canTapOnHeader: true,
-                      ),
-                      ExpansionPanel(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.background,
-                        headerBuilder: (BuildContext context, bool isExpanded) {
-                          return const Text('Transaction History');
-                        },
-                        body:
-                            const TransactionHistory(), // Custom Widget for Transaction History
-                        isExpanded: _isOpen[2],
-                        canTapOnHeader: true,
-                      ),
-                    ],
-                  ),
-                ],
+              child: SingleChildScrollView(
+                child: ExpansionPanelList(
+                  expansionCallback: (int index, bool isExpanded) {
+                    _togglePanel(index);
+                  },
+                  children: [
+                    _buildExpansionPanel(
+                      0,
+                      'Funding',
+                      const LightningFundingActions(),
+                    ),
+                    _buildExpansionPanel(
+                      1,
+                      'Payments',
+                      const LightningPaymentActions(),
+                    ),
+                    _buildExpansionPanel(
+                      2,
+                      'Transaction History',
+                      const TransactionHistory(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

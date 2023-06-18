@@ -35,12 +35,6 @@ class WalletInfoContainer extends StatelessWidget {
             offset: Offset(0, 2),
           )
         ],
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(16),
-          bottomRight: Radius.circular(16),
-          topLeft: Radius.circular(0),
-          topRight: Radius.circular(0),
-        ),
       ),
       child: Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(0, 24, 0, 12),
