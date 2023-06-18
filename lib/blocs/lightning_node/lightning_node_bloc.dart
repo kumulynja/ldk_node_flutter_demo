@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_event.dart';
 import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_state.dart';
+import 'package:ldk_node_flutter_demo/enums/app_network_extension.dart';
 import 'package:lightning_node_repository/lightning_node_repository.dart';
 import 'package:seed_repository/seed_repository.dart';
 
@@ -14,16 +16,32 @@ class LightningNodeBloc extends Bloc<LightningNodeEvent, LightningNodeState> {
         _seedRepository = seedRepository,
         super(const LightningNodeInitial()) {
     on<LightningNodeStarted>(_onLightningNodeStarted);
+    on<LightningNodeRefreshed>(_onLightningNodeRefreshed);
+    on<ChannelEventReceived>(_onChannelEventReceived);
+    on<PaymentEventReceived>(_onPaymentEventReceived);
+    // Subscribe to the streams
+    _channelEventSubscription = _lightningNodeRepository.channelStream.listen(
+      (channelEvent) {
+        add(ChannelEventReceived(channelEvent));
+      },
+    );
+    _paymentEventSubscription = _lightningNodeRepository.paymentStream.listen(
+      (paymentEvent) {
+        add(PaymentEventReceived(paymentEvent));
+      },
+    );
   }
 
   final LightningNodeRepository _lightningNodeRepository;
   final SeedRepository _seedRepository;
-  //late ldk.Node node;
-  //ldk.Config config;
+  late StreamSubscription<ChannelEvent> _channelEventSubscription;
+  late StreamSubscription<PaymentEvent> _paymentEventSubscription;
 
   @override
-  Future<void> close() {
-    //snode.stop();
+  Future<void> close() async {
+    await _paymentEventSubscription.cancel();
+    await _channelEventSubscription.cancel();
+    await _lightningNodeRepository.stopNode();
     return super.close();
   }
 
@@ -33,15 +51,67 @@ class LightningNodeBloc extends Bloc<LightningNodeEvent, LightningNodeState> {
   ) async {
     try {
       final mnemonic = await _seedRepository.retrieveMnemonic();
-      //final seed = await mnemonic.toLightningSeed(event.network.bdkNetwork, event.password);
+      //final seed = await mnemonic.toLightningSeed(event.network.asSeedRepositoryNetwork, event.password);
       //print("seed: $seed");
       await _lightningNodeRepository.startNodeWithMnemonic(
-          mnemonic: mnemonic.asString(), network: event.network);
+          mnemonic: mnemonic.asString(),
+          network: event.network.asLightningNodeRepositoryNetwork);
       final nodeId = await _lightningNodeRepository.nodeId;
-      emit(LightningNodeRunSuccess(network: event.network, nodeId: nodeId));
+      final onChainBalance = await _lightningNodeRepository.onChainBalance;
+      final channels = await _lightningNodeRepository.channels;
+      emit(
+        LightningNodeRunSuccess(
+          network: event.network,
+          nodeId: nodeId,
+          onChainBalance: onChainBalance,
+          channels: channels,
+        ),
+      );
     } catch (e) {
-      print("node start failed with error: $e");
+      if (kDebugMode) {
+        print("node start failed with error: $e");
+      }
       emit(const LightningNodeRunFailure());
+    }
+  }
+
+  Future<void> _onLightningNodeRefreshed(
+    LightningNodeRefreshed event,
+    Emitter<LightningNodeState> emit,
+  ) async {
+    if (state is LightningNodeRunSuccess) {
+      final onChainBalance = await _lightningNodeRepository.onChainBalance;
+      final channels = await _lightningNodeRepository.channels;
+      emit((state as LightningNodeRunSuccess).copyWith(
+        onChainBalance: onChainBalance,
+        channels: channels,
+      ));
+    }
+  }
+
+  Future<void> _onPaymentEventReceived(
+    PaymentEventReceived event,
+    Emitter<LightningNodeState> emit,
+  ) async {
+    final channels = await _lightningNodeRepository.channels;
+    if (state is LightningNodeRunSuccess) {
+      emit((state as LightningNodeRunSuccess).copyWith(
+        channels: channels,
+      ));
+    }
+  }
+
+  Future<void> _onChannelEventReceived(
+    ChannelEventReceived event,
+    Emitter<LightningNodeState> emit,
+  ) async {
+    final onChainBalance = await _lightningNodeRepository.onChainBalance;
+    final channels = await _lightningNodeRepository.channels;
+    if (state is LightningNodeRunSuccess) {
+      emit((state as LightningNodeRunSuccess).copyWith(
+        onChainBalance: onChainBalance,
+        channels: channels,
+      ));
     }
   }
 }

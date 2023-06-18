@@ -38,7 +38,7 @@ class CreateWalletScreen extends StatelessWidget {
                         GoRouter.of(context).pushNamed('mnemonic');
                       },
                       child: const Text(
-                        'Create coin purse',
+                        'Create wallet',
                       ),
                     ),
                     TextButton(

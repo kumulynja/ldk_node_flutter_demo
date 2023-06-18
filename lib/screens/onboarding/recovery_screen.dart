@@ -10,7 +10,7 @@ class RecoveryScreen extends StatelessWidget {
     return BlocProvider(
       create: (BuildContext context) => RecoveryBloc(),
       child: const Scaffold(
-        body: Text("INPUT MNEMONIC HERE"),
+        body: Text('<<<INPUT MNEMONIC HERE PLACEHOLDER>>>'),
       ),
     );
   }

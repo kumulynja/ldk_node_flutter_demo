@@ -1,7 +1,9 @@
 // TODO: Put public facing types in this file.
 
-import 'package:bdk_flutter/bdk_flutter.dart';
+import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
+import 'package:seed_repository/src/enums/network.dart';
 import 'package:secure_storage_layer/secure_storage_layer.dart';
+import 'package:seed_repository/src/enums/network_extension.dart';
 
 // Todo: Add possible exceptions and error handling
 
@@ -12,8 +14,8 @@ class SeedRepository {
   final SecureStorageLayer _secureStorageLayer;
   static const _mnemonicKey = 'mnemonic';
 
-  Future<Mnemonic> create24WordMnemonic() async {
-    return Mnemonic.create(WordCount.Words24);
+  Future<bdk.Mnemonic> create24WordMnemonic() async {
+    return bdk.Mnemonic.create(bdk.WordCount.Words24);
   }
 
   Future<void> storeMnemonic(String mnemonic) async {
@@ -25,11 +27,11 @@ class SeedRepository {
     return _secureStorageLayer.containsKeyInSecureData(_mnemonicKey);
   }
 
-  Future<Mnemonic> retrieveMnemonic() async {
+  Future<bdk.Mnemonic> retrieveMnemonic() async {
     final mnemonicWords =
         await _secureStorageLayer.readSecureData(_mnemonicKey);
     if (mnemonicWords != null) {
-      return Mnemonic.fromString(mnemonicWords);
+      return bdk.Mnemonic.fromString(mnemonicWords);
     } else {
       throw MnemonicRetrievalFailure.fromCode('missing-mnemonic');
     }
@@ -40,12 +42,12 @@ class SeedRepository {
   }
 }
 
-extension UnifiedWallet on Mnemonic {
+extension UnifiedWallet on bdk.Mnemonic {
   Future<List<int>> toLightningSeed(Network network, String? password) async {
-    final masterXprv = await DescriptorSecretKey.create(
-        network: network, mnemonic: this, password: password);
-    final derivedXprv =
-        await masterXprv.derive(await DerivationPath.create(path: "m/535h"));
+    final masterXprv = await bdk.DescriptorSecretKey.create(
+        network: network.asBdkNetwork, mnemonic: this, password: password);
+    final derivedXprv = await masterXprv
+        .derive(await bdk.DerivationPath.create(path: "m/535h"));
     return derivedXprv.secretBytes();
   }
 }

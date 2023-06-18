@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lightning_node_repository/lightning_node_repository.dart';
+import 'package:ldk_node_flutter_demo/enums/app_network.dart';
 
-class NetworkCubit extends Cubit<Network> {
+class NetworkCubit extends Cubit<AppNetwork> {
   // Default network is Regtest, at the moment of creating the NetworkCubit, another network can be set
-  NetworkCubit([Network network = Network.regtest]) : super(network);
+  NetworkCubit([AppNetwork network = AppNetwork.regtest]) : super(network);
 
-  void setNetwork(Network network) {
+  void setNetwork(AppNetwork network) {
     emit(network);
   }
 }
