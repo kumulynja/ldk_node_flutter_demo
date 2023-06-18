@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_event.dart';
@@ -56,19 +57,20 @@ class LightningNodeBloc extends Bloc<LightningNodeEvent, LightningNodeState> {
           mnemonic: mnemonic.asString(),
           network: event.network.asLightningNodeRepositoryNetwork);
       final nodeId = await _lightningNodeRepository.nodeId;
-      print('nodeId in _onLightningNodeStarted: $nodeId');
-      final balance = await _lightningNodeRepository.balance;
-      print(
-          'balance in _onLightningNodeStarted: ${balance.totalOutboundCapacity}');
+      final onChainBalance = await _lightningNodeRepository.onChainBalance;
+      final channels = await _lightningNodeRepository.channels;
       emit(
         LightningNodeRunSuccess(
           network: event.network,
           nodeId: nodeId,
-          balance: balance.totalOutboundCapacity,
+          onChainBalance: onChainBalance,
+          channels: channels,
         ),
       );
     } catch (e) {
-      print("node start failed with error: $e");
+      if (kDebugMode) {
+        print("node start failed with error: $e");
+      }
       emit(const LightningNodeRunFailure());
     }
   }
@@ -77,14 +79,12 @@ class LightningNodeBloc extends Bloc<LightningNodeEvent, LightningNodeState> {
     LightningNodeRefreshed event,
     Emitter<LightningNodeState> emit,
   ) async {
-    print('_onLightningNodeRefreshed');
     if (state is LightningNodeRunSuccess) {
-      final balance = await _lightningNodeRepository.balance;
-      print(
-        'balance in _onLightningNodeRefreshed: ${balance.totalOutboundCapacity}',
-      );
+      final onChainBalance = await _lightningNodeRepository.onChainBalance;
+      final channels = await _lightningNodeRepository.channels;
       emit((state as LightningNodeRunSuccess).copyWith(
-        balance: balance.totalOutboundCapacity,
+        onChainBalance: onChainBalance,
+        channels: channels,
       ));
     }
   }
@@ -93,11 +93,11 @@ class LightningNodeBloc extends Bloc<LightningNodeEvent, LightningNodeState> {
     PaymentEventReceived event,
     Emitter<LightningNodeState> emit,
   ) async {
-    print('payment event received: $event');
-    final balance = await _lightningNodeRepository.balance;
+    final channels = await _lightningNodeRepository.channels;
     if (state is LightningNodeRunSuccess) {
-      emit((state as LightningNodeRunSuccess)
-          .copyWith(balance: balance.totalOutboundCapacity));
+      emit((state as LightningNodeRunSuccess).copyWith(
+        channels: channels,
+      ));
     }
   }
 
@@ -105,11 +105,13 @@ class LightningNodeBloc extends Bloc<LightningNodeEvent, LightningNodeState> {
     ChannelEventReceived event,
     Emitter<LightningNodeState> emit,
   ) async {
-    print("channel event received: $event");
-    final balance = await _lightningNodeRepository.balance;
+    final onChainBalance = await _lightningNodeRepository.onChainBalance;
+    final channels = await _lightningNodeRepository.channels;
     if (state is LightningNodeRunSuccess) {
-      emit((state as LightningNodeRunSuccess)
-          .copyWith(balance: balance.totalOutboundCapacity));
+      emit((state as LightningNodeRunSuccess).copyWith(
+        onChainBalance: onChainBalance,
+        channels: channels,
+      ));
     }
   }
 }

@@ -81,7 +81,9 @@ class LightningWalletHomeScreenState extends State<LightningWalletHomeScreen> {
               onRefresh: () => _lightningNodeBloc.add(
                 const LightningNodeRefreshed(),
               ),
-              balance: state is LightningNodeRunSuccess ? state.balance : null,
+              balance: state is LightningNodeRunSuccess
+                  ? state.totalOutBoundCapacity
+                  : null,
               unit: 'sats',
               balanceLabel: 'spendable',
               network:
@@ -97,7 +99,18 @@ class LightningWalletHomeScreenState extends State<LightningWalletHomeScreen> {
                     _buildExpansionPanel(
                       0,
                       'Funding',
-                      const LightningFundingActions(),
+                      LightningFundingActions(
+                        confirmedOnChainBalance:
+                            state is LightningNodeRunSuccess
+                                ? state.onChainBalance.confirmed
+                                : 0,
+                        nrOfActiveChannels: state is LightningNodeRunSuccess
+                            ? state.activeChannelCount
+                            : 0,
+                        nrOfInactiveChannels: state is LightningNodeRunSuccess
+                            ? state.inActiveChannelCount
+                            : 0,
+                      ),
                     ),
                     _buildExpansionPanel(
                       1,

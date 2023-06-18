@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:ldk_node_flutter_demo/enums/app_network.dart';
+import 'package:lightning_node_repository/lightning_node_repository.dart';
 
 abstract class LightningNodeState extends Equatable {
   const LightningNodeState();
@@ -16,27 +17,38 @@ class LightningNodeRunSuccess extends LightningNodeState {
   const LightningNodeRunSuccess({
     required this.network,
     required this.nodeId,
-    required this.balance,
+    required this.onChainBalance,
+    required this.channels,
   });
 
   final AppNetwork network;
   final String nodeId;
-  final int balance;
+  final Balance onChainBalance;
+  final List<ChannelDetails> channels;
 
   LightningNodeRunSuccess copyWith({
     AppNetwork? network,
     String? nodeId,
-    int? balance,
+    Balance? onChainBalance,
+    List<ChannelDetails>? channels,
   }) {
     return LightningNodeRunSuccess(
       network: network ?? this.network,
       nodeId: nodeId ?? this.nodeId,
-      balance: balance ?? this.balance,
+      onChainBalance: onChainBalance ?? this.onChainBalance,
+      channels: channels ?? this.channels,
     );
   }
 
+  int get activeChannelCount =>
+      channels.where((channel) => channel.isUsable).length;
+  int get inActiveChannelCount =>
+      channels.where((channel) => !channel.isUsable).length;
+  int get totalOutBoundCapacity =>
+      channels.fold(0, (sum, channel) => sum + channel.outboundCapacityMsat);
+
   @override
-  List<Object?> get props => [network, nodeId, balance];
+  List<Object?> get props => [network, nodeId, onChainBalance, channels];
 }
 
 class LightningNodeRunFailure extends LightningNodeState {

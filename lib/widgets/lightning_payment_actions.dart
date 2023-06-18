@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class LightningPaymentActions extends StatelessWidget {
   const LightningPaymentActions({
@@ -12,27 +13,21 @@ class LightningPaymentActions extends StatelessWidget {
       children: [
         ListTile(
           leading: const Icon(Icons.arrow_downward),
-          title: const Text('Receive'),
-          onTap: () {
-            print("Receive tapped");
-            // Use Navigator.push() here to navigate to the screen for this action
-          },
+          title: const Text('Generate invoice'),
+          onTap: () => GoRouter.of(context).pushNamed('invoice'),
+          trailing: const Icon(Icons.arrow_forward_ios, size: 18.0),
         ),
         ListTile(
           leading: const Icon(Icons.qr_code),
           title: const Text('Pay invoice'),
-          onTap: () {
-            print("Pay invoice tapped");
-            // Use Navigator.push() here to navigate to the screen for this action
-          },
+          onTap: () => GoRouter.of(context).pushNamed('pay'),
+          trailing: const Icon(Icons.arrow_forward_ios, size: 18.0),
         ),
         ListTile(
           leading: const Icon(Icons.send),
           title: const Text('Send spontaneously'),
-          onTap: () {
-            print("Send spontaneously tapped");
-            // Use Navigator.push() here to navigate to the screen for this action
-          },
+          onTap: () => GoRouter.of(context).pushNamed('send'),
+          trailing: const Icon(Icons.arrow_forward_ios, size: 18.0),
         ),
         const ListTile(
           leading: Icon(Icons.access_time),

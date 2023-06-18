@@ -4,12 +4,9 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:lightning_node_repository/src/enums/network.dart';
-import 'package:lightning_node_repository/src/ldk/channel_details_extension.dart';
-import 'package:lightning_node_repository/src/ldk/node_config_extension.dart';
-import 'package:lightning_node_repository/src/models/channel.dart';
+import 'package:lightning_node_repository/src/utils/node_config_extension.dart';
 import 'package:lightning_node_repository/src/models/channel_events.dart';
 import 'package:lightning_node_repository/src/models/node_config.dart';
-import 'package:lightning_node_repository/src/models/balance.dart';
 import 'package:lightning_node_repository/src/models/payment_events.dart';
 
 import 'package:path_provider/path_provider.dart';
@@ -94,26 +91,12 @@ class LightningNodeRepository {
     return address.addressHex;
   }
 
-  Future<Balance> get balance async {
-    final onChainBalance = await _node.onChainBalance();
-    final channels = await _node.listChannels();
-    final totalOutboundCapacity = channels.fold(
-      0,
-      (summedOutboundCapacity, channel) =>
-          summedOutboundCapacity + channel.outboundCapacityMsat,
-    );
-    return Balance(
-      totalOutboundCapacity: totalOutboundCapacity,
-      confirmed: onChainBalance.confirmed,
-      untrustedPending: onChainBalance.untrustedPending,
-      immature: onChainBalance.immature,
-      trustedPending: onChainBalance.trustedPending,
-    );
+  Future<ldk.Balance> get onChainBalance async {
+    return await _node.onChainBalance();
   }
 
-  Future<List<Channel>> get channels async {
-    final channels = await _node.listChannels();
-    return channels.map((channel) => channel.asChannel).toList();
+  Future<List<ldk.ChannelDetails>> get channels async {
+    return await _node.listChannels();
   }
 
   // Private instance methods

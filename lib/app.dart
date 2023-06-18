@@ -3,7 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_bloc.dart';
 import 'package:ldk_node_flutter_demo/blocs/network/network_cubit.dart';
+import 'package:ldk_node_flutter_demo/screens/lightning_wallet/close_channel_screen.dart';
+import 'package:ldk_node_flutter_demo/screens/lightning_wallet/fund_on_chain_screen.dart';
+import 'package:ldk_node_flutter_demo/screens/lightning_wallet/invoice_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/lightning_wallet/lightning_wallet_home_screen.dart';
+import 'package:ldk_node_flutter_demo/screens/lightning_wallet/open_channel_screen.dart';
+import 'package:ldk_node_flutter_demo/screens/lightning_wallet/pay_screen.dart';
+import 'package:ldk_node_flutter_demo/screens/lightning_wallet/send_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/onboarding/create_wallet_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/onboarding/onboarding_completed_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/onboarding/mnemonic_screen.dart';
@@ -99,8 +105,8 @@ class AppState extends State<App> {
                   },
                 ),
                 GoRoute(
-                  path: 'completed',
-                  name: 'onboarding-completed',
+                  path: 'onboarded',
+                  name: 'onboarded',
                   pageBuilder: (BuildContext context, GoRouterState state) {
                     return const MaterialPage(
                       child: OnboardingCompletedScreen(),
@@ -120,8 +126,62 @@ class AppState extends State<App> {
               child: LightningWalletHomeScreen(),
             );
           },
-          routes: const [
+          routes: [
             // Define subroutes for Lightning Wallet here.
+            GoRoute(
+              path: 'fund-on-chain',
+              name: 'fund-on-chain',
+              pageBuilder: (BuildContext context, GoRouterState state) {
+                return const MaterialPage(
+                  child: FundOnChainScreen(),
+                );
+              },
+            ),
+            GoRoute(
+              path: 'open-channel',
+              name: 'open-channel',
+              pageBuilder: (BuildContext context, GoRouterState state) {
+                return const MaterialPage(
+                  child: OpenChannelScreen(),
+                );
+              },
+            ),
+            GoRoute(
+              path: 'close-channel',
+              name: 'close-channel',
+              pageBuilder: (BuildContext context, GoRouterState state) {
+                return const MaterialPage(
+                  child: CloseChannelScreen(),
+                );
+              },
+            ),
+            GoRoute(
+              path: 'invoice',
+              name: 'invoice',
+              pageBuilder: (BuildContext context, GoRouterState state) {
+                return const MaterialPage(
+                  child: InvoiceScreen(),
+                );
+              },
+            ),
+            GoRoute(
+              path: 'pay',
+              name: 'pay',
+              pageBuilder: (BuildContext context, GoRouterState state) {
+                return const MaterialPage(
+                  child: PayScreen(),
+                );
+              },
+            ),
+            GoRoute(
+              path: 'send',
+              name: 'send',
+              pageBuilder: (BuildContext context, GoRouterState state) {
+                return const MaterialPage(
+                  child: SendScreen(),
+                );
+              },
+            ),
           ],
         ),
       ],
