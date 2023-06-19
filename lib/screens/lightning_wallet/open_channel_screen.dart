@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 
-class OpenChannelScreen extends StatelessWidget {
+class OpenChannelScreen extends StatefulWidget {
   const OpenChannelScreen({super.key});
 
   @override
+  State<OpenChannelScreen> createState() => _OpenChannelScreenState();
+}
+
+class _OpenChannelScreenState extends State<OpenChannelScreen> {
+  @override
   Widget build(BuildContext context) {
-    return const Text('YOU ARE ON THE OPEN CHANNEL SCREEN');
+    // TODO: implement build
+    throw UnimplementedError();
   }
 }

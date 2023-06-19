@@ -43,6 +43,7 @@ dependencies:
   lightning_node_repository:
     path: packages/lightning_node_repository
   qr_flutter: ^4.1.0
+  formz: ^0.6.0
   
 
 dev_dependencies:
