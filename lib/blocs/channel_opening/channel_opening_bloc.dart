@@ -3,11 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ldk_node_flutter_demo/blocs/channel_opening/channel_opening_event.dart';
-import 'package:ldk_node_flutter_demo/models/form_inputs/amount_msat_input.dart';
-import 'package:ldk_node_flutter_demo/models/form_inputs/amount_sat_input.dart';
-import 'package:ldk_node_flutter_demo/models/form_inputs/ip_input.dart';
-import 'package:ldk_node_flutter_demo/models/form_inputs/node_id_input.dart';
-import 'package:ldk_node_flutter_demo/models/form_inputs/port_input.dart';
+import 'package:ldk_node_flutter_demo/models/form_inputs/amount_msat.dart';
+import 'package:ldk_node_flutter_demo/models/form_inputs/amount_sats.dart';
+import 'package:ldk_node_flutter_demo/models/form_inputs/ip.dart';
+import 'package:ldk_node_flutter_demo/models/form_inputs/node_id.dart';
+import 'package:ldk_node_flutter_demo/models/form_inputs/port.dart';
 import 'package:lightning_node_repository/lightning_node_repository.dart';
 
 import 'channel_opening_state.dart';
@@ -45,9 +45,9 @@ class ChannelOpeningBloc
     AddressIpChanged event,
     Emitter<ChannelOpeningState> emit,
   ) {
-    final addressIp = IpInput.dirty(event.addressIp);
+    final addressIp = Ip.dirty(event.addressIp);
     emit(state.copyWith(
-      addressIp: addressIp.isValid ? addressIp : IpInput.pure(event.addressIp),
+      addressIp: addressIp.isValid ? addressIp : Ip.pure(event.addressIp),
       isValid: Formz.validate([
         addressIp,
         state.addressPort,
@@ -62,7 +62,7 @@ class ChannelOpeningBloc
     AddressIpUnfocused event,
     Emitter<ChannelOpeningState> emit,
   ) {
-    final addressIp = IpInput.dirty(state.addressIp.value);
+    final addressIp = Ip.dirty(state.addressIp.value);
     emit(state.copyWith(
       addressIp: addressIp,
       isValid: Formz.validate([
@@ -79,10 +79,10 @@ class ChannelOpeningBloc
     AddressPortChanged event,
     Emitter<ChannelOpeningState> emit,
   ) {
-    final addressPort = PortInput.dirty(event.addressPort);
+    final addressPort = Port.dirty(event.addressPort);
     emit(state.copyWith(
       addressPort:
-          addressPort.isValid ? addressPort : PortInput.pure(event.addressPort),
+          addressPort.isValid ? addressPort : Port.pure(event.addressPort),
       isValid: Formz.validate([
         state.addressIp,
         addressPort,
@@ -97,7 +97,7 @@ class ChannelOpeningBloc
     AddressPortUnfocused event,
     Emitter<ChannelOpeningState> emit,
   ) {
-    final addressPort = PortInput.dirty(state.addressPort.value);
+    final addressPort = Port.dirty(state.addressPort.value);
     emit(state.copyWith(
       addressPort: addressPort,
       isValid: Formz.validate([
@@ -114,12 +114,11 @@ class ChannelOpeningBloc
     CounterpartyPublicKeyChanged event,
     Emitter<ChannelOpeningState> emit,
   ) {
-    final counterpartyPublicKey =
-        NodeIdInput.dirty(event.counterpartyPublicKey);
+    final counterpartyPublicKey = NodeId.dirty(event.counterpartyPublicKey);
     emit(state.copyWith(
       counterpartyPublicKey: counterpartyPublicKey.isValid
           ? counterpartyPublicKey
-          : NodeIdInput.pure(event.counterpartyPublicKey),
+          : NodeId.pure(event.counterpartyPublicKey),
       isValid: Formz.validate([
         state.addressIp,
         state.addressPort,
@@ -135,7 +134,7 @@ class ChannelOpeningBloc
     Emitter<ChannelOpeningState> emit,
   ) {
     final counterpartyPublicKey =
-        NodeIdInput.dirty(state.counterpartyPublicKey.value);
+        NodeId.dirty(state.counterpartyPublicKey.value);
     emit(state.copyWith(
       counterpartyPublicKey: counterpartyPublicKey,
       isValid: Formz.validate([
@@ -152,11 +151,11 @@ class ChannelOpeningBloc
     ChannelAmountSatsChanged event,
     Emitter<ChannelOpeningState> emit,
   ) {
-    final channelAmountSats = AmountSatInput.dirty(event.channelAmountSats);
+    final channelAmountSats = AmountSats.dirty(event.channelAmountSats);
     emit(state.copyWith(
       channelAmountSats: channelAmountSats.isValid
           ? channelAmountSats
-          : AmountSatInput.pure(event.channelAmountSats),
+          : AmountSats.pure(event.channelAmountSats),
       isValid: Formz.validate([
         state.addressIp,
         state.addressPort,
@@ -171,8 +170,7 @@ class ChannelOpeningBloc
     ChannelAmountSatsUnfocused event,
     Emitter<ChannelOpeningState> emit,
   ) {
-    final channelAmountSats =
-        AmountSatInput.dirty(state.channelAmountSats.value);
+    final channelAmountSats = AmountSats.dirty(state.channelAmountSats.value);
     emit(state.copyWith(
       channelAmountSats: channelAmountSats,
       isValid: Formz.validate([
@@ -190,11 +188,11 @@ class ChannelOpeningBloc
     Emitter<ChannelOpeningState> emit,
   ) {
     final pushToCounterpartyMsat =
-        AmountMsatInput.dirty(event.pushToCounterpartyMsat);
+        AmountMsat.dirty(event.pushToCounterpartyMsat);
     emit(state.copyWith(
       pushToCounterpartyMsat: pushToCounterpartyMsat.isValid
           ? pushToCounterpartyMsat
-          : AmountMsatInput.pure(event.pushToCounterpartyMsat),
+          : AmountMsat.pure(event.pushToCounterpartyMsat),
       isValid: Formz.validate([
         state.addressIp,
         state.addressPort,
@@ -210,7 +208,7 @@ class ChannelOpeningBloc
     Emitter<ChannelOpeningState> emit,
   ) {
     final pushToCounterpartyMsat =
-        AmountMsatInput.dirty(state.pushToCounterpartyMsat.value);
+        AmountMsat.dirty(state.pushToCounterpartyMsat.value);
     emit(state.copyWith(
       pushToCounterpartyMsat: pushToCounterpartyMsat,
       isValid: Formz.validate([
@@ -237,14 +235,13 @@ class ChannelOpeningBloc
     Emitter<ChannelOpeningState> emit,
   ) async {
     try {
-      final addressIp = IpInput.dirty(state.addressIp.value);
-      final addressPort = PortInput.dirty(state.addressPort.value);
+      final addressIp = Ip.dirty(state.addressIp.value);
+      final addressPort = Port.dirty(state.addressPort.value);
       final counterpartyPublicKey =
-          NodeIdInput.dirty(state.counterpartyPublicKey.value);
-      final channelAmountSats =
-          AmountSatInput.dirty(state.channelAmountSats.value);
+          NodeId.dirty(state.counterpartyPublicKey.value);
+      final channelAmountSats = AmountSats.dirty(state.channelAmountSats.value);
       final pushToCounterpartyMsat =
-          AmountMsatInput.dirty(state.pushToCounterpartyMsat.value);
+          AmountMsat.dirty(state.pushToCounterpartyMsat.value);
       final announceChannel = state.announceChannel;
       emit(
         state.copyWith(

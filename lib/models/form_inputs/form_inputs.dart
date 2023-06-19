@@ -1,5 +1,5 @@
-export 'amount_btc_input.dart';
-export 'amount_sat_input.dart';
-export 'ip_input.dart';
-export 'node_id_input.dart';
-export 'port_input.dart';
+export 'amount_btc.dart';
+export 'amount_sats.dart';
+export 'ip.dart';
+export 'node_id.dart';
+export 'port.dart';

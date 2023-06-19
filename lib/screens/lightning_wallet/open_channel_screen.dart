@@ -1,16 +1,333 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
+import 'package:go_router/go_router.dart';
+import 'package:ldk_node_flutter_demo/blocs/channel_opening/channel_opening_bloc.dart';
+import 'package:ldk_node_flutter_demo/blocs/channel_opening/channel_opening_event.dart';
+import 'package:ldk_node_flutter_demo/blocs/channel_opening/channel_opening_state.dart';
+import 'package:lightning_node_repository/lightning_node_repository.dart';
 
-class OpenChannelScreen extends StatefulWidget {
+class OpenChannelScreen extends StatelessWidget {
   const OpenChannelScreen({super.key});
 
   @override
-  State<OpenChannelScreen> createState() => _OpenChannelScreenState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: BlocProvider(
+        create: (context) => ChannelOpeningBloc(
+          lightningNodeRepository:
+              RepositoryProvider.of<LightningNodeRepository>(context),
+        ),
+        child: const OpenChannelForm(),
+      ),
+    );
+  }
 }
 
-class _OpenChannelScreenState extends State<OpenChannelScreen> {
+class OpenChannelForm extends StatefulWidget {
+  const OpenChannelForm({super.key});
+
+  @override
+  State<OpenChannelForm> createState() => _OpenChannelFormState();
+}
+
+class _OpenChannelFormState extends State<OpenChannelForm> {
+  final _addressIpFocusNode = FocusNode();
+  final _addressPortFocusNode = FocusNode();
+  final _counterpartyPublicKeyFocusNode = FocusNode();
+  final _channelAmountSatsFocusNode = FocusNode();
+  final _pushToCounterpartyMsat = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _addressIpFocusNode.addListener(() {
+      if (!_addressIpFocusNode.hasFocus) {
+        context.read<ChannelOpeningBloc>().add(AddressIpUnfocused());
+      }
+    });
+    _addressPortFocusNode.addListener(() {
+      if (!_addressPortFocusNode.hasFocus) {
+        context.read<ChannelOpeningBloc>().add(AddressPortUnfocused());
+      }
+    });
+    _counterpartyPublicKeyFocusNode.addListener(() {
+      if (!_counterpartyPublicKeyFocusNode.hasFocus) {
+        context
+            .read<ChannelOpeningBloc>()
+            .add(CounterpartyPublicKeyUnfocused());
+      }
+    });
+    _channelAmountSatsFocusNode.addListener(() {
+      if (!_channelAmountSatsFocusNode.hasFocus) {
+        context.read<ChannelOpeningBloc>().add(ChannelAmountSatsUnfocused());
+      }
+    });
+    _pushToCounterpartyMsat.addListener(() {
+      if (!_pushToCounterpartyMsat.hasFocus) {
+        context
+            .read<ChannelOpeningBloc>()
+            .add(PushToCounterpartyMsatUnfocused());
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _addressIpFocusNode.dispose();
+    _addressPortFocusNode.dispose();
+    _counterpartyPublicKeyFocusNode.dispose();
+    _channelAmountSatsFocusNode.dispose();
+    _pushToCounterpartyMsat.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return BlocListener<ChannelOpeningBloc, ChannelOpeningState>(
+      listener: (context, state) {
+        if (state.status.isSuccess) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          showDialog<void>(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: const Text('Channel opened'),
+                content: const Text('Channel opened successfully'),
+                actions: [
+                  TextButton(
+                    onPressed: () => GoRouter.of(context).pop(),
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+        if (state.status.isInProgress) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar
+            ..showSnackBar(
+              const SnackBar(content: Text('Opening channel...')),
+            );
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          children: [
+            _AddressIpInput(focusNode: _addressIpFocusNode),
+            _AddressPortInput(focusNode: _addressPortFocusNode),
+            _CounterpartyPublicKeyInput(
+                focusNode: _counterpartyPublicKeyFocusNode),
+            _ChannelAmountSatsInput(focusNode: _channelAmountSatsFocusNode),
+            _PushToCounterpartyMsatInput(focusNode: _pushToCounterpartyMsat),
+            _AnnounceChannelCheckbox(),
+            const _OpenChannelButton(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AddressIpInput extends StatelessWidget {
+  const _AddressIpInput({required this.focusNode});
+
+  final FocusNode focusNode;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ChannelOpeningBloc, ChannelOpeningState>(
+      builder: (context, state) {
+        return TextFormField(
+          initialValue: state.addressIp.value,
+          focusNode: focusNode,
+          decoration: InputDecoration(
+            labelText: 'Ip',
+            helperText:
+                'A valid ip address of the node to connect to and open a channel with',
+            errorText: state.addressIp.displayError != null
+                ? 'Please ensure the ip entered is valid'
+                : null,
+          ),
+          keyboardType: TextInputType.number,
+          onChanged: (value) {
+            context.read<ChannelOpeningBloc>().add(AddressIpChanged(value));
+          },
+          textInputAction: TextInputAction.next,
+        );
+      },
+    );
+  }
+}
+
+class _AddressPortInput extends StatelessWidget {
+  const _AddressPortInput({required this.focusNode});
+
+  final FocusNode focusNode;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ChannelOpeningBloc, ChannelOpeningState>(
+      builder: (context, state) {
+        return TextFormField(
+          initialValue: state.addressPort.value.toString(),
+          focusNode: focusNode,
+          decoration: InputDecoration(
+            labelText: 'Port',
+            helperText:
+                'A valid port of the node to connect to and open a channel with',
+            errorText: state.addressPort.displayError != null
+                ? 'Please ensure the port entered is valid'
+                : null,
+          ),
+          keyboardType: TextInputType.number,
+          onChanged: (value) {
+            context
+                .read<ChannelOpeningBloc>()
+                .add(AddressPortChanged(int.parse(value)));
+          },
+          textInputAction: TextInputAction.next,
+        );
+      },
+    );
+  }
+}
+
+class _CounterpartyPublicKeyInput extends StatelessWidget {
+  const _CounterpartyPublicKeyInput({required this.focusNode});
+
+  final FocusNode focusNode;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ChannelOpeningBloc, ChannelOpeningState>(
+      builder: (context, state) {
+        return TextFormField(
+          initialValue: state.counterpartyPublicKey.value,
+          focusNode: focusNode,
+          decoration: InputDecoration(
+            labelText: 'Counterparty public key',
+            helperText:
+                'The public key or node id of the node to connect to and open a channel with',
+            errorText: state.counterpartyPublicKey.displayError != null
+                ? 'Please ensure the public key entered is valid'
+                : null,
+          ),
+          keyboardType: TextInputType.number,
+          onChanged: (value) {
+            context
+                .read<ChannelOpeningBloc>()
+                .add(CounterpartyPublicKeyChanged(value));
+          },
+          textInputAction: TextInputAction.next,
+        );
+      },
+    );
+  }
+}
+
+class _ChannelAmountSatsInput extends StatelessWidget {
+  const _ChannelAmountSatsInput({required this.focusNode});
+
+  final FocusNode focusNode;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ChannelOpeningBloc, ChannelOpeningState>(
+      builder: (context, state) {
+        return TextFormField(
+          initialValue: state.channelAmountSats.value.toString(),
+          focusNode: focusNode,
+          decoration: InputDecoration(
+            labelText: 'Channel amount sats',
+            helperText:
+                'The amount of sats to open the channel with. Must be greater than 0',
+            errorText: state.channelAmountSats.displayError != null
+                ? 'Please ensure the amount entered is valid'
+                : null,
+          ),
+          keyboardType: TextInputType.number,
+          onChanged: (value) {
+            context
+                .read<ChannelOpeningBloc>()
+                .add(ChannelAmountSatsChanged(int.parse(value)));
+          },
+          textInputAction: TextInputAction.next,
+        );
+      },
+    );
+  }
+}
+
+class _PushToCounterpartyMsatInput extends StatelessWidget {
+  const _PushToCounterpartyMsatInput({required this.focusNode});
+
+  final FocusNode focusNode;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ChannelOpeningBloc, ChannelOpeningState>(
+      builder: (context, state) {
+        return TextFormField(
+          initialValue: state.pushToCounterpartyMsat.value.toString(),
+          focusNode: focusNode,
+          decoration: InputDecoration(
+            labelText: 'Push to counterparty msat',
+            helperText:
+                'The amount of msat to push to the counterparty. Must be greater than 0',
+            errorText: state.pushToCounterpartyMsat.displayError != null
+                ? 'Please ensure the amount entered is valid'
+                : null,
+          ),
+          keyboardType: TextInputType.number,
+          onChanged: (value) {
+            context
+                .read<ChannelOpeningBloc>()
+                .add(PushToCounterpartyMsatChanged(int.parse(value)));
+          },
+          textInputAction: TextInputAction.next,
+        );
+      },
+    );
+  }
+}
+
+class _AnnounceChannelCheckbox extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ChannelOpeningBloc, ChannelOpeningState>(
+      builder: (context, state) {
+        return CheckboxListTile(
+          title: const Text('Announce channel'),
+          subtitle: const Text(
+              'Whether to announce the channel to the network or keep the channel private'),
+          value: state.announceChannel,
+          onChanged: (value) {
+            context
+                .read<ChannelOpeningBloc>()
+                .add(AnnounceChannelChanged(value ?? false));
+          },
+        );
+      },
+    );
+  }
+}
+
+class _OpenChannelButton extends StatelessWidget {
+  const _OpenChannelButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final isValid =
+        context.select((ChannelOpeningBloc bloc) => bloc.state.isValid);
+    return ElevatedButton(
+      onPressed: isValid
+          ? () =>
+              context.read<ChannelOpeningBloc>().add(ChannelOpeningSubmitted())
+          : null,
+      child: const Text('Open channel'),
+    );
   }
 }

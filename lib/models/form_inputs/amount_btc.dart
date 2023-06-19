@@ -1,29 +1,29 @@
 import 'package:formz/formz.dart';
 
-enum AmountBtcInputError {
+enum AmountBtcError {
   empty,
   tooHigh,
   tooManyDecimals,
 }
 
-class AmountBtcInout extends FormzInput<double, AmountBtcInputError> {
-  const AmountBtcInout.pure() : super.pure(0);
-  const AmountBtcInout.dirty([double value = 0]) : super.dirty(value);
+class AmountBtc extends FormzInput<double, AmountBtcError> {
+  const AmountBtc.pure() : super.pure(0);
+  const AmountBtc.dirty([double value = 0]) : super.dirty(value);
 
   @override
-  AmountBtcInputError? validator(double? value) {
+  AmountBtcError? validator(double? value) {
     if (value == null) {
-      return AmountBtcInputError.empty;
+      return AmountBtcError.empty;
     }
 
     // Check if the amount exceeds the max bitcoin supply.
     if (value > 21000000) {
-      return AmountBtcInputError.tooHigh;
+      return AmountBtcError.tooHigh;
     }
 
     // Check if the amount has more than 8 decimals.
     if (value.toString().split('.').last.length > 8) {
-      return AmountBtcInputError.tooManyDecimals;
+      return AmountBtcError.tooManyDecimals;
     }
 
     // If the amount is valid, return null.

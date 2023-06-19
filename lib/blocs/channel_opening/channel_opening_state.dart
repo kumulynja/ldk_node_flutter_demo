@@ -1,38 +1,38 @@
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
-import 'package:ldk_node_flutter_demo/models/form_inputs/amount_msat_input.dart';
-import 'package:ldk_node_flutter_demo/models/form_inputs/amount_sat_input.dart';
-import 'package:ldk_node_flutter_demo/models/form_inputs/ip_input.dart';
-import 'package:ldk_node_flutter_demo/models/form_inputs/node_id_input.dart';
-import 'package:ldk_node_flutter_demo/models/form_inputs/port_input.dart';
+import 'package:ldk_node_flutter_demo/models/form_inputs/amount_msat.dart';
+import 'package:ldk_node_flutter_demo/models/form_inputs/amount_sats.dart';
+import 'package:ldk_node_flutter_demo/models/form_inputs/ip.dart';
+import 'package:ldk_node_flutter_demo/models/form_inputs/node_id.dart';
+import 'package:ldk_node_flutter_demo/models/form_inputs/port.dart';
 
 final class ChannelOpeningState extends Equatable {
   const ChannelOpeningState({
-    this.addressIp = const IpInput.pure(),
-    this.addressPort = const PortInput.pure(),
-    this.counterpartyPublicKey = const NodeIdInput.pure(),
-    this.channelAmountSats = const AmountSatInput.pure(),
-    this.pushToCounterpartyMsat = const AmountMsatInput.pure(),
+    this.addressIp = const Ip.pure(),
+    this.addressPort = const Port.pure(),
+    this.counterpartyPublicKey = const NodeId.pure(),
+    this.channelAmountSats = const AmountSats.pure(),
+    this.pushToCounterpartyMsat = const AmountMsat.pure(),
     this.announceChannel = false,
     this.isValid = false,
     this.status = FormzSubmissionStatus.initial,
   });
 
-  final IpInput addressIp;
-  final PortInput addressPort;
-  final NodeIdInput counterpartyPublicKey;
-  final AmountSatInput channelAmountSats;
-  final AmountMsatInput pushToCounterpartyMsat;
+  final Ip addressIp;
+  final Port addressPort;
+  final NodeId counterpartyPublicKey;
+  final AmountSats channelAmountSats;
+  final AmountMsat pushToCounterpartyMsat;
   final bool announceChannel;
   final bool isValid;
   final FormzSubmissionStatus status;
 
   ChannelOpeningState copyWith({
-    IpInput? addressIp,
-    PortInput? addressPort,
-    NodeIdInput? counterpartyPublicKey,
-    AmountSatInput? channelAmountSats,
-    AmountMsatInput? pushToCounterpartyMsat,
+    Ip? addressIp,
+    Port? addressPort,
+    NodeId? counterpartyPublicKey,
+    AmountSats? channelAmountSats,
+    AmountMsat? pushToCounterpartyMsat,
     bool? announceChannel,
     bool? isValid,
     FormzSubmissionStatus? status,
