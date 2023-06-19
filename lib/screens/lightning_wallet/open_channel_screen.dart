@@ -18,7 +18,28 @@ class OpenChannelScreen extends StatelessWidget {
           lightningNodeRepository:
               RepositoryProvider.of<LightningNodeRepository>(context),
         ),
-        child: const OpenChannelForm(),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Open Channel',
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
+                const SizedBox(height: 24.0),
+                Text(
+                  'Add the details of the node you want to open a channel with.',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32.0),
+                const OpenChannelForm(),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -113,16 +134,46 @@ class _OpenChannelFormState extends State<OpenChannelForm> {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _AddressIpInput(focusNode: _addressIpFocusNode),
-            _AddressPortInput(focusNode: _addressPortFocusNode),
-            _CounterpartyPublicKeyInput(
-                focusNode: _counterpartyPublicKeyFocusNode),
-            _ChannelAmountSatsInput(focusNode: _channelAmountSatsFocusNode),
-            _PushToCounterpartyMsatInput(focusNode: _pushToCounterpartyMsat),
-            _AnnounceChannelCheckbox(),
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 4),
+                    child: _AddressIpInput(focusNode: _addressIpFocusNode),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 4),
+                    child: _AddressPortInput(focusNode: _addressPortFocusNode),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: _CounterpartyPublicKeyInput(
+                focusNode: _counterpartyPublicKeyFocusNode,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: _ChannelAmountSatsInput(
+                  focusNode: _channelAmountSatsFocusNode),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: _PushToCounterpartyMsatInput(
+                  focusNode: _pushToCounterpartyMsat),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: _AnnounceChannelCheckbox(),
+            ),
+            const SizedBox(height: 16), // Spacing before the button
             const _OpenChannelButton(),
           ],
         ),
@@ -327,6 +378,10 @@ class _OpenChannelButton extends StatelessWidget {
           ? () =>
               context.read<ChannelOpeningBloc>().add(ChannelOpeningSubmitted())
           : null,
+      style: ElevatedButton.styleFrom(
+        disabledBackgroundColor: Colors
+            .grey, // This sets the color of the button when it's disabled.
+      ),
       child: const Text('Open channel'),
     );
   }

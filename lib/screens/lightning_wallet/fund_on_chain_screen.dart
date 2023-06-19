@@ -37,13 +37,13 @@ class FundOnChainScreen extends StatelessWidget {
                 'Fund On-Chain',
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
-              const SizedBox(height: 8.0),
+              const SizedBox(height: 24.0),
               Text(
                 'Scan the QR Code or copy the address below to fund your wallet',
                 style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24.0),
+              const SizedBox(height: 32.0),
               if (fundingAddress.isEmpty)
                 const CircularProgressIndicator()
               else ...[
