@@ -42,7 +42,7 @@ class LightningNodeRunSuccess extends LightningNodeState {
 
   int get activeChannelCount =>
       channels.where((channel) => channel.isUsable).length;
-  int get inActiveChannelCount =>
+  int get inactiveChannelCount =>
       channels.where((channel) => !channel.isUsable).length;
   int get totalOutBoundCapacityMsat =>
       channels.fold(0, (sum, channel) => sum + channel.outboundCapacityMsat);

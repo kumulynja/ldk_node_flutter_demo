@@ -36,7 +36,7 @@ class LightningFundingActions extends StatelessWidget {
               () => GoRouter.of(context).pushNamed('open-channel'),
             ),
             buildActionColumn(
-              '$nrOfActiveChannels',
+              '$nrOfInactiveChannels',
               'Inactive channels',
               'Close channel',
               () => GoRouter.of(context).pushNamed('close-channel'),

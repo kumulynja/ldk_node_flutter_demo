@@ -108,7 +108,7 @@ class LightningWalletHomeScreenState extends State<LightningWalletHomeScreen> {
                             ? state.activeChannelCount
                             : 0,
                         nrOfInactiveChannels: state is LightningNodeRunSuccess
-                            ? state.inActiveChannelCount
+                            ? state.inactiveChannelCount
                             : 0,
                       ),
                     ),
