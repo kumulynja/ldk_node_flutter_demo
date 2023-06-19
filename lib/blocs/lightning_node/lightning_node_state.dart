@@ -44,10 +44,25 @@ class LightningNodeRunSuccess extends LightningNodeState {
       channels.where((channel) => channel.isUsable).length;
   int get inactiveChannelCount =>
       channels.where((channel) => !channel.isUsable).length;
-  int get totalOutBoundCapacityMsat =>
-      channels.fold(0, (sum, channel) => sum + channel.outboundCapacityMsat);
+  int get totalOutBoundCapacityMsat => channels.fold(
+        0,
+        (sum, channel) =>
+            channel.isUsable ? sum + channel.outboundCapacityMsat : sum,
+      ); // To be spendable, the channel should be usable
   double get confirmedOnChainBalanceBtc =>
       onChainBalance.confirmed / 100000000; // 1 BTC = 100,000,000 sats
+  double get trustedPendingOnChainBalanceBtc =>
+      onChainBalance.trustedPending / 100000000; // 1 BTC = 100,000,000 sats
+  double get untrustedPendingOnChainBalanceBtc =>
+      onChainBalance.untrustedPending / 100000000; // 1 BTC = 100,000,000 sats
+  double get immatureOnChainBalanceBtc =>
+      onChainBalance.immature / 100000000; // 1 BTC = 100,000,000 sats
+  double get totalOnChainBalanceBtc =>
+      (onChainBalance.confirmed +
+          onChainBalance.trustedPending +
+          onChainBalance.untrustedPending +
+          onChainBalance.immature) /
+      100000000; // 1 BTC = 100,000,000 sats
   double get totalOutBoundCapacitySat =>
       totalOutBoundCapacityMsat / 1000; // 1 sat = 1000 msats
 

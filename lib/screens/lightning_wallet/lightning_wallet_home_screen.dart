@@ -102,7 +102,7 @@ class LightningWalletHomeScreenState extends State<LightningWalletHomeScreen> {
                       LightningFundingActions(
                         confirmedOnChainBalance:
                             state is LightningNodeRunSuccess
-                                ? state.confirmedOnChainBalanceBtc
+                                ? state.totalOnChainBalanceBtc
                                 : 0,
                         nrOfActiveChannels: state is LightningNodeRunSuccess
                             ? state.activeChannelCount
