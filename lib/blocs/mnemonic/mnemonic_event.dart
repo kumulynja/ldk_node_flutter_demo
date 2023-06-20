@@ -6,5 +6,8 @@ abstract class MnemonicEvent extends Equatable {
 }
 
 class MnemonicGenerationPressed extends MnemonicEvent {}
+// class MnemonicGenerationStarted extends MnemonicEvent {}
+
+// class MnemonicGenerationRetried extends MnemonicEvent {}
 
 class MnemonicConfirmed extends MnemonicEvent {}

@@ -10,10 +10,7 @@ class AmountSats extends FormzInput<int, AmountSatsError> {
   const AmountSats.dirty([super.value = 0]) : super.dirty();
 
   @override
-  AmountSatsError? validator(int? value) {
-    if (value == null) {
-      return AmountSatsError.empty;
-    }
+  AmountSatsError? validator(int value) {
     // Check if the amount exceeds the max bitcoin supply.
     if (value > 2100000000000000) {
       return AmountSatsError.tooHigh;
