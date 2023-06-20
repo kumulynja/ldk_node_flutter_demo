@@ -49,7 +49,6 @@ class LightningWalletHomeScreenState extends State<LightningWalletHomeScreen> {
 
   ExpansionPanel _buildExpansionPanel(int index, String title, Widget body) {
     return ExpansionPanel(
-      backgroundColor: Theme.of(context).colorScheme.background,
       headerBuilder: (BuildContext context, bool isExpanded) {
         return ListTile(
           title: Text(title),
@@ -76,7 +75,8 @@ class LightningWalletHomeScreenState extends State<LightningWalletHomeScreen> {
           children: [
             WalletInfoContainer(
               walletName: 'Lightning Wallet',
-              containerColor: Theme.of(context).colorScheme.surface,
+              containerColor: Theme.of(context).colorScheme.primary,
+              textColor: Theme.of(context).colorScheme.onPrimary,
               isSyncing: state is! LightningNodeRunSuccess,
               onRefresh: () => _lightningNodeBloc.add(
                 const LightningNodeRefreshed(),
@@ -102,13 +102,13 @@ class LightningWalletHomeScreenState extends State<LightningWalletHomeScreen> {
                       LightningFundingActions(
                         confirmedOnChainBalance:
                             state is LightningNodeRunSuccess
-                                ? state.confirmedOnChainBalanceBtc
+                                ? state.totalOnChainBalanceBtc
                                 : 0,
                         nrOfActiveChannels: state is LightningNodeRunSuccess
                             ? state.activeChannelCount
                             : 0,
                         nrOfInactiveChannels: state is LightningNodeRunSuccess
-                            ? state.inActiveChannelCount
+                            ? state.inactiveChannelCount
                             : 0,
                       ),
                     ),

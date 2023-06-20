@@ -18,9 +18,11 @@ class CreateWalletScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset(
-                  'assets/images/coin_purse.png',
-                  fit: BoxFit.fitWidth,
+                Flexible(
+                  child: Image.asset(
+                    'assets/images/ldk-banner.png',
+                    fit: BoxFit.scaleDown,
+                  ),
                 ),
               ],
             ),

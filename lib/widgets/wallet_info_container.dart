@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class WalletInfoContainer extends StatelessWidget {
   final String walletName;
   final Color containerColor;
+  final Color textColor;
   final bool isSyncing;
   final VoidCallback? onRefresh;
   final double? balance;
@@ -15,6 +16,7 @@ class WalletInfoContainer extends StatelessWidget {
     super.key,
     required this.walletName,
     required this.containerColor,
+    required this.textColor,
     this.isSyncing = false,
     this.balance,
     this.unit,
@@ -54,7 +56,7 @@ class WalletInfoContainer extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.onSurface,
+                          color: textColor,
                         ),
                         textAlign: TextAlign.start,
                       ),
@@ -63,7 +65,7 @@ class WalletInfoContainer extends StatelessWidget {
                   onRefresh != null
                       ? IconButton(
                           icon: const Icon(Icons.refresh),
-                          color: Theme.of(context).colorScheme.onSurface,
+                          color: textColor,
                           onPressed: onRefresh,
                         )
                       : const SizedBox.shrink(),
@@ -86,7 +88,7 @@ class WalletInfoContainer extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.normal,
-                              color: Theme.of(context).colorScheme.onSurface,
+                              color: textColor,
                             ),
                             textAlign: TextAlign.start,
                           ),
@@ -99,7 +101,7 @@ class WalletInfoContainer extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.normal,
-                                color: Theme.of(context).colorScheme.onSurface,
+                                color: textColor,
                               ),
                               textAlign: TextAlign.start,
                             )),
@@ -120,7 +122,7 @@ class WalletInfoContainer extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.normal,
-                          color: Theme.of(context).colorScheme.onSurface,
+                          color: textColor,
                         ),
                       ),
                     ),
@@ -129,7 +131,7 @@ class WalletInfoContainer extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.normal,
-                        color: Theme.of(context).colorScheme.onSurface,
+                        color: textColor,
                       ),
                       textAlign: TextAlign.start,
                     ),
