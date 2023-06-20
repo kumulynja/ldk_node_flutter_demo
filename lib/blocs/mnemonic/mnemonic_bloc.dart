@@ -8,14 +8,15 @@ class MnemonicBloc extends Bloc<MnemonicEvent, MnemonicState> {
   MnemonicBloc({required SeedRepository seedRepository})
       : _seedRepository = seedRepository,
         super(MnemonicInitial()) {
-    on<MnemonicGenerationPressed>(_onGenerationPressed);
+    on<MnemonicGenerationStarted>(_onGenerationRequested);
+    on<MnemonicGenerationRetried>(_onGenerationRequested);
     on<MnemonicConfirmed>(_onConfirmed);
   }
 
   final SeedRepository _seedRepository;
 
-  Future<void> _onGenerationPressed(
-    MnemonicGenerationPressed event,
+  Future<void> _onGenerationRequested(
+    MnemonicEvent event,
     Emitter<MnemonicState> emit,
   ) async {
     try {
