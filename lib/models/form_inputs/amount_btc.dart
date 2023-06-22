@@ -7,15 +7,11 @@ enum AmountBtcError {
 }
 
 class AmountBtc extends FormzInput<double, AmountBtcError> {
-  const AmountBtc.pure() : super.pure(0);
-  const AmountBtc.dirty([double value = 0]) : super.dirty(value);
+  const AmountBtc.pure([super.value = 0]) : super.pure();
+  const AmountBtc.dirty([super.value = 0]) : super.dirty();
 
   @override
-  AmountBtcError? validator(double? value) {
-    if (value == null) {
-      return AmountBtcError.empty;
-    }
-
+  AmountBtcError? validator(double value) {
     // Check if the amount exceeds the max bitcoin supply.
     if (value > 21000000) {
       return AmountBtcError.tooHigh;

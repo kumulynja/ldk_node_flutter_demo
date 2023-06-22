@@ -13,6 +13,10 @@ class OpenChannelScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: const BackButton(),
+        title: const Text('Channel opening'),
+      ),
       body: BlocProvider(
         create: (context) => ChannelOpeningBloc(
           lightningNodeRepository:
@@ -22,12 +26,8 @@ class OpenChannelScreen extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
-                  'Open Channel',
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
                 const SizedBox(height: 24.0),
                 Text(
                   'Add the details of the node you want to open a channel with.',

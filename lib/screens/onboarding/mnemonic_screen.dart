@@ -17,7 +17,7 @@ class MnemonicScreen extends StatelessWidget {
     return BlocProvider(
       create: (_) => MnemonicBloc(
         seedRepository: RepositoryProvider.of<SeedRepository>(context),
-      )..add(MnemonicGenerationPressed()),
+      )..add(MnemonicGenerationStarted()),
       child: Scaffold(
         body: BlocListener<MnemonicBloc, MnemonicState>(
           // Separate consequences of changes in the bloc, like navigation here,
@@ -47,7 +47,7 @@ class MnemonicScreen extends StatelessWidget {
                     context),
               MnemonicFailure() => _buildMnemonicScreen(
                     'Wallet creation failed.', 'Try again', () {
-                  context.read<MnemonicBloc>().add(MnemonicGenerationPressed());
+                  context.read<MnemonicBloc>().add(MnemonicGenerationRetried());
                 }, 'Failed to generate a mnemonic. Please try again.', context),
               MnemonicStoreFailure() =>
                 _buildMnemonicScreen((state).mnemonic, 'Continue', () {

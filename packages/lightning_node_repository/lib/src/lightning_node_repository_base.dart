@@ -46,6 +46,10 @@ class LightningNodeRepository {
     //_shouldListenToEvents = false;
   }
 
+  Future<void> setConfig(NodeConfig config) async {
+    await _saveConfig(config);
+  }
+
   Future<void> connectOpenChannel({
     required String addressIp,
     required int addressPort,
@@ -76,14 +80,40 @@ class LightningNodeRepository {
         channelId: channelId, counterpartyNodeId: counterpartyNodeId);
   }
 
-  Future<void> setConfig(NodeConfig config) async {
-    await _saveConfig(config);
+  Future<ldk.Invoice> generateInvoiceWithoutAmount({
+    String description = '',
+    int expirySecs = 3600, // 3600 seconds = 1 hour default
+  }) async {
+    return _node.receiveVariableAmountPayment(
+        description: description, expirySecs: expirySecs);
+  }
+
+  Future<ldk.Invoice> generateInvoiceWithAmount({
+    required int amountMsat,
+    String description = '',
+    int expirySecs = 3600, // 3600 seconds = 1 hour default
+  }) async {
+    return _node.receivePayment(
+      amountMsat: amountMsat,
+      description: description,
+      expirySecs: expirySecs,
+    );
   }
 
   // Getters
   Future<String> get nodeId async {
     final publicKey = await _node.nodeId();
     return publicKey.keyHex;
+  }
+
+  Future<String?> get listeningIp async {
+    final listeningAddress = await _node.listeningAddress();
+    return listeningAddress != null ? listeningAddress.ip : null;
+  }
+
+  Future<int?> get listeningPort async {
+    final listeningAddress = await _node.listeningAddress();
+    return listeningAddress != null ? listeningAddress.port : null;
   }
 
   Future<String> get newFundingAddress async {

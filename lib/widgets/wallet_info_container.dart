@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class WalletInfoContainer extends StatelessWidget {
   final String walletName;
   final Color containerColor;
   final Color textColor;
   final bool isSyncing;
-  final VoidCallback? onRefresh;
+  final Widget? infoPopupContent;
   final double? balance;
   final String? unit;
   final String?
@@ -22,7 +23,7 @@ class WalletInfoContainer extends StatelessWidget {
     this.unit,
     this.balanceLabel,
     this.network,
-    this.onRefresh,
+    this.infoPopupContent,
   });
 
   @override
@@ -62,11 +63,28 @@ class WalletInfoContainer extends StatelessWidget {
                       ),
                     ),
                   ),
-                  onRefresh != null
+                  infoPopupContent != null
                       ? IconButton(
-                          icon: const Icon(Icons.refresh),
+                          icon: const Icon(Icons.info_outline_rounded),
                           color: textColor,
-                          onPressed: onRefresh,
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext dialogContext) {
+                                return AlertDialog(
+                                  content: infoPopupContent,
+                                  actions: [
+                                    TextButton(
+                                      child: const Text('Close'),
+                                      onPressed: () {
+                                        GoRouter.of(dialogContext).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
                         )
                       : const SizedBox.shrink(),
                 ],

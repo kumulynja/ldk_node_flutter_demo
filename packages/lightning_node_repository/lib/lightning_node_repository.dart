@@ -4,4 +4,5 @@ export 'src/enums/enums.dart';
 export 'src/utils/utils.dart';
 
 // Export any libraries intended for clients of this package.
-export 'package:ldk_node/ldk_node.dart' show Balance, ChannelDetails, U8Array32;
+export 'package:ldk_node/ldk_node.dart'
+    show Balance, ChannelDetails, Invoice, U8Array32;

@@ -17,24 +17,32 @@ class LightningNodeRunSuccess extends LightningNodeState {
   const LightningNodeRunSuccess({
     required this.network,
     required this.nodeId,
+    required this.listeningIp,
+    required this.listeningPort,
     required this.onChainBalance,
     required this.channels,
   });
 
   final AppNetwork network;
   final String nodeId;
+  final String? listeningIp;
+  final int? listeningPort;
   final Balance onChainBalance;
   final List<ChannelDetails> channels;
 
   LightningNodeRunSuccess copyWith({
     AppNetwork? network,
     String? nodeId,
+    String? listeningIp,
+    int? listeningPort,
     Balance? onChainBalance,
     List<ChannelDetails>? channels,
   }) {
     return LightningNodeRunSuccess(
       network: network ?? this.network,
       nodeId: nodeId ?? this.nodeId,
+      listeningIp: listeningIp ?? this.listeningIp,
+      listeningPort: listeningPort ?? this.listeningPort,
       onChainBalance: onChainBalance ?? this.onChainBalance,
       channels: channels ?? this.channels,
     );
@@ -67,7 +75,8 @@ class LightningNodeRunSuccess extends LightningNodeState {
       totalOutBoundCapacityMsat / 1000; // 1 sat = 1000 msats
 
   @override
-  List<Object?> get props => [network, nodeId, onChainBalance, channels];
+  List<Object?> get props =>
+      [network, nodeId, listeningIp, listeningPort, onChainBalance, channels];
 }
 
 class LightningNodeRunFailure extends LightningNodeState {
