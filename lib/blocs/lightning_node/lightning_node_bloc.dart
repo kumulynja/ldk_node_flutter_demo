@@ -57,12 +57,16 @@ class LightningNodeBloc extends Bloc<LightningNodeEvent, LightningNodeState> {
           mnemonic: mnemonic.asString(),
           network: event.network.asLightningNodeRepositoryNetwork);
       final nodeId = await _lightningNodeRepository.nodeId;
+      final listeningIp = await _lightningNodeRepository.listeningIp;
+      final listeningPort = await _lightningNodeRepository.listeningPort;
       final onChainBalance = await _lightningNodeRepository.onChainBalance;
       final channels = await _lightningNodeRepository.channels;
       emit(
         LightningNodeRunSuccess(
           network: event.network,
           nodeId: nodeId,
+          listeningIp: listeningIp,
+          listeningPort: listeningPort,
           onChainBalance: onChainBalance,
           channels: channels,
         ),

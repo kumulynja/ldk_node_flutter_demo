@@ -106,6 +106,16 @@ class LightningNodeRepository {
     return publicKey.keyHex;
   }
 
+  Future<String?> get listeningIp async {
+    final listeningAddress = await _node.listeningAddress();
+    return listeningAddress != null ? listeningAddress.ip : null;
+  }
+
+  Future<int?> get listeningPort async {
+    final listeningAddress = await _node.listeningAddress();
+    return listeningAddress != null ? listeningAddress.port : null;
+  }
+
   Future<String> get newFundingAddress async {
     final address = await _node.newFundingAddress();
     return address.addressHex;

@@ -5,6 +5,17 @@ class CloseChannelScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text('YOU ARE ON THE CLOSE CHANNEL SCREEN');
+    return Scaffold(
+      appBar: AppBar(
+        leading: const BackButton(),
+        title: const Text('Channel closing'),
+      ),
+      body: Center(
+        child: Text(
+          'Hey, you can implement this screen!',
+          style: Theme.of(context).textTheme.displayMedium,
+        ),
+      ),
+    );
   }
 }

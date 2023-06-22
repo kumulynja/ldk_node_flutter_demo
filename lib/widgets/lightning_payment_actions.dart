@@ -14,7 +14,7 @@ class LightningPaymentActions extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.arrow_downward),
           title: const Text('Generate invoice'),
-          onTap: () => GoRouter.of(context).pushNamed('invoice'),
+          onTap: () => GoRouter.of(context).pushNamed('invoice-generation'),
           trailing: const Icon(Icons.arrow_forward_ios, size: 18.0),
         ),
         ListTile(

@@ -26,17 +26,17 @@ class FundOnChainScreen extends StatelessWidget {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        leading: const BackButton(),
+        title: const Text('On-chain funding'),
+      ),
       body: BlocBuilder<LightningFundingAddressCubit, String>(
         bloc: lightningFundingAddressCubit,
         builder: (context, fundingAddress) => Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                'Fund On-Chain',
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
               const SizedBox(height: 24.0),
               Text(
                 'Scan the QR Code or copy the address below to fund your wallet',

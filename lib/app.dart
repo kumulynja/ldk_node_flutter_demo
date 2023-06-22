@@ -5,7 +5,7 @@ import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_bloc.d
 import 'package:ldk_node_flutter_demo/blocs/network/network_cubit.dart';
 import 'package:ldk_node_flutter_demo/screens/lightning_wallet/close_channel_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/lightning_wallet/fund_on_chain_screen.dart';
-import 'package:ldk_node_flutter_demo/screens/lightning_wallet/invoice_screen.dart';
+import 'package:ldk_node_flutter_demo/screens/lightning_wallet/invoice_generation_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/lightning_wallet/lightning_wallet_home_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/lightning_wallet/open_channel_screen.dart';
 import 'package:ldk_node_flutter_demo/screens/lightning_wallet/pay_screen.dart';
@@ -156,11 +156,11 @@ class AppState extends State<App> {
               },
             ),
             GoRoute(
-              path: 'invoice',
-              name: 'invoice',
+              path: 'invoice-generation',
+              name: 'invoice-generation',
               pageBuilder: (BuildContext context, GoRouterState state) {
                 return const MaterialPage(
-                  child: InvoiceScreen(),
+                  child: InvoiceGenerationScreen(),
                 );
               },
             ),
