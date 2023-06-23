@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_event.dart';
-import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_state.dart';
+import 'package:ldk_node_flutter_demo/bloc/lightning_node/lightning_node_event.dart';
+import 'package:ldk_node_flutter_demo/bloc/lightning_node/lightning_node_state.dart';
 import 'package:ldk_node_flutter_demo/enums/app_network_extension.dart';
 import 'package:lightning_node_repository/lightning_node_repository.dart';
 import 'package:seed_repository/seed_repository.dart';

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ldk_node_flutter_demo/blocs/channel_opening/channel_opening_bloc.dart';
-import 'package:ldk_node_flutter_demo/blocs/channel_opening/channel_opening_event.dart';
-import 'package:ldk_node_flutter_demo/blocs/channel_opening/channel_opening_state.dart';
+import 'package:ldk_node_flutter_demo/bloc/channel_opening/channel_opening_bloc.dart';
+import 'package:ldk_node_flutter_demo/bloc/channel_opening/channel_opening_event.dart';
+import 'package:ldk_node_flutter_demo/bloc/channel_opening/channel_opening_state.dart';
 import 'package:lightning_node_repository/lightning_node_repository.dart';
 
-class OpenChannelScreen extends StatelessWidget {
-  const OpenChannelScreen({super.key});
+class ChannelOpeningScreen extends StatelessWidget {
+  const ChannelOpeningScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

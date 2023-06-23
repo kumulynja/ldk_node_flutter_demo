@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class CreateWalletScreen extends StatelessWidget {
-  const CreateWalletScreen({super.key});
+class WalletCreationScreen extends StatelessWidget {
+  const WalletCreationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class CreateWalletScreen extends StatelessWidget {
                   children: [
                     FilledButton(
                       onPressed: () async {
-                        GoRouter.of(context).pushNamed('mnemonic');
+                        GoRouter.of(context).pushNamed('mnemonic-generation');
                       },
                       child: const Text(
                         'Create wallet',
@@ -45,7 +45,7 @@ class CreateWalletScreen extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        GoRouter.of(context).pushNamed('recovery');
+                        GoRouter.of(context).pushNamed('wallet-recovery');
                       },
                       child: const Text('Restore funds'),
                     ),

@@ -1,25 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_bloc.dart';
-import 'package:ldk_node_flutter_demo/blocs/network/network_cubit.dart';
-import 'package:ldk_node_flutter_demo/screens/lightning_wallet/close_channel_screen.dart';
-import 'package:ldk_node_flutter_demo/screens/lightning_wallet/fund_on_chain_screen.dart';
-import 'package:ldk_node_flutter_demo/screens/lightning_wallet/invoice_generation_screen.dart';
-import 'package:ldk_node_flutter_demo/screens/lightning_wallet/lightning_wallet_home_screen.dart';
-import 'package:ldk_node_flutter_demo/screens/lightning_wallet/open_channel_screen.dart';
-import 'package:ldk_node_flutter_demo/screens/lightning_wallet/pay_screen.dart';
-import 'package:ldk_node_flutter_demo/screens/lightning_wallet/send_screen.dart';
-import 'package:ldk_node_flutter_demo/screens/onboarding/create_wallet_screen.dart';
-import 'package:ldk_node_flutter_demo/screens/onboarding/onboarding_completed_screen.dart';
-import 'package:ldk_node_flutter_demo/screens/onboarding/mnemonic_screen.dart';
-import 'package:ldk_node_flutter_demo/screens/onboarding/recovery_screen.dart';
-import 'package:ldk_node_flutter_demo/screens/splash_screen.dart';
+import 'package:ldk_node_flutter_demo/bloc/lightning_node/lightning_node_bloc.dart';
+import 'package:ldk_node_flutter_demo/bloc/network/network_cubit.dart';
+import 'package:ldk_node_flutter_demo/routes/routes.dart';
 import 'package:ldk_node_flutter_demo/theme/app_theme.dart';
 import 'package:lightning_node_repository/lightning_node_repository.dart';
 import 'package:seed_repository/seed_repository.dart';
 
-class App extends StatefulWidget {
+class App extends StatelessWidget {
   const App({
     required SeedRepository seedRepository,
     required LightningNodeRepository lightningNodeRepository,
@@ -37,187 +25,40 @@ class App extends StatefulWidget {
   final LightningNodeBloc _lightningNodeBloc;
 
   @override
-  AppState createState() => AppState();
-}
-
-class AppState extends State<App> {
-  // Add blocs here that needs to be shared between screens
-  // late final ...Bloc _...Bloc;
-
-  @override
-  void initState() {
-    super.initState();
-    // init blocs here that need to be shared between screens
-    // _...Bloc = ...Bloc();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    /// The route configuration.
-    final GoRouter router = GoRouter(
-      routes: <RouteBase>[
-        GoRoute(
-          path: '/',
-          name: 'splash',
-          pageBuilder: (BuildContext context, GoRouterState state) {
-            return const MaterialPage(
-              child: SplashScreen(),
-            );
-          },
-          redirect: (BuildContext context, GoRouterState state) async {
-            if (state.location == '/') {
-              // Only redirect if it's a top-level route
-              if (await widget._seedRepository.doesMnemonicExist()) {
-                return '/lightning';
-              }
-              // If no mnemonic exists, onboarding should be done to create
-              //  or restore one.
-              return '/onboarding';
-            }
-            return null;
-          },
-          routes: <GoRoute>[
-            GoRoute(
-              path: 'onboarding',
-              name: 'onboarding',
-              pageBuilder: (BuildContext context, GoRouterState state) {
-                return const MaterialPage(
-                  child: CreateWalletScreen(),
-                );
-              },
-              routes: [
-                GoRoute(
-                  path: 'mnemonic',
-                  name: 'mnemonic',
-                  pageBuilder: (BuildContext context, GoRouterState state) {
-                    return const MaterialPage(
-                      child: MnemonicScreen(),
-                    );
-                  },
-                ),
-                GoRoute(
-                  path: 'recovery',
-                  name: 'recovery',
-                  pageBuilder: (BuildContext context, GoRouterState state) {
-                    return const MaterialPage(
-                      child: RecoveryScreen(),
-                    );
-                  },
-                ),
-                GoRoute(
-                  path: 'onboarded',
-                  name: 'onboarded',
-                  pageBuilder: (BuildContext context, GoRouterState state) {
-                    return const MaterialPage(
-                      child: OnboardingCompletedScreen(),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-        // Top-level route for Lightning Wallet
-        GoRoute(
-          path: '/lightning',
-          name: 'lightning',
-          pageBuilder: (BuildContext context, GoRouterState state) {
-            return const MaterialPage(
-              child: LightningWalletHomeScreen(),
-            );
-          },
-          routes: [
-            // Define subroutes for Lightning Wallet here.
-            GoRoute(
-              path: 'fund-on-chain',
-              name: 'fund-on-chain',
-              pageBuilder: (BuildContext context, GoRouterState state) {
-                return const MaterialPage(
-                  child: FundOnChainScreen(),
-                );
-              },
-            ),
-            GoRoute(
-              path: 'open-channel',
-              name: 'open-channel',
-              pageBuilder: (BuildContext context, GoRouterState state) {
-                return const MaterialPage(
-                  child: OpenChannelScreen(),
-                );
-              },
-            ),
-            GoRoute(
-              path: 'close-channel',
-              name: 'close-channel',
-              pageBuilder: (BuildContext context, GoRouterState state) {
-                return const MaterialPage(
-                  child: CloseChannelScreen(),
-                );
-              },
-            ),
-            GoRoute(
-              path: 'invoice-generation',
-              name: 'invoice-generation',
-              pageBuilder: (BuildContext context, GoRouterState state) {
-                return const MaterialPage(
-                  child: InvoiceGenerationScreen(),
-                );
-              },
-            ),
-            GoRoute(
-              path: 'pay',
-              name: 'pay',
-              pageBuilder: (BuildContext context, GoRouterState state) {
-                return const MaterialPage(
-                  child: PayScreen(),
-                );
-              },
-            ),
-            GoRoute(
-              path: 'send',
-              name: 'send',
-              pageBuilder: (BuildContext context, GoRouterState state) {
-                return const MaterialPage(
-                  child: SendScreen(),
-                );
-              },
-            ),
-          ],
-        ),
-      ],
-    );
-
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(
-          value: widget._seedRepository,
+          value: _seedRepository,
         ),
         RepositoryProvider.value(
-          value: widget._lightningNodeRepository,
+          value: _lightningNodeRepository,
         ),
       ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider.value(
-            value: widget._networkCubit,
+            value: _networkCubit,
           ),
           BlocProvider.value(
-            value: widget._lightningNodeBloc,
+            value: _lightningNodeBloc,
           ),
         ],
-        child: MaterialApp.router(
-          title: 'LDK Node Flutter Demo',
-          theme: AppTheme.lightTheme,
-          routerConfig: router,
-        ),
+        child: const AppView(),
       ),
     );
   }
+}
+
+class AppView extends StatelessWidget {
+  const AppView({super.key});
 
   @override
-  void dispose() {
-    // Close blocs that are used over different screens here
-    //_...Bloc.close();
-    super.dispose();
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      title: 'LDK Node Flutter Demo',
+      theme: AppTheme.lightTheme,
+      routerConfig: router,
+    );
   }
 }
