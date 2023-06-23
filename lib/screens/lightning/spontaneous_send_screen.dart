@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SendScreen extends StatelessWidget {
-  const SendScreen({super.key});
+class SpontaneousSendScreen extends StatelessWidget {
+  const SpontaneousSendScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

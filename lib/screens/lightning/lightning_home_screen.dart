@@ -3,23 +3,22 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_bloc.dart';
-import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_event.dart';
-import 'package:ldk_node_flutter_demo/blocs/lightning_node/lightning_node_state.dart';
+import 'package:ldk_node_flutter_demo/bloc/lightning_node/lightning_node_bloc.dart';
+import 'package:ldk_node_flutter_demo/bloc/lightning_node/lightning_node_event.dart';
+import 'package:ldk_node_flutter_demo/bloc/lightning_node/lightning_node_state.dart';
 import 'package:ldk_node_flutter_demo/widgets/transaction_history.dart';
 import 'package:ldk_node_flutter_demo/widgets/wallet_info_container.dart';
 import 'package:ldk_node_flutter_demo/widgets/lightning_funding_actions.dart';
 import 'package:ldk_node_flutter_demo/widgets/lightning_payment_actions.dart';
 
-class LightningWalletHomeScreen extends StatefulWidget {
-  const LightningWalletHomeScreen({Key? key}) : super(key: key);
+class LightningHomeScreen extends StatefulWidget {
+  const LightningHomeScreen({Key? key}) : super(key: key);
 
   @override
-  LightningWalletHomeScreenState createState() =>
-      LightningWalletHomeScreenState();
+  LightningHomeScreenState createState() => LightningHomeScreenState();
 }
 
-class LightningWalletHomeScreenState extends State<LightningWalletHomeScreen> {
+class LightningHomeScreenState extends State<LightningHomeScreen> {
   late final LightningNodeBloc _lightningNodeBloc;
   final List<bool> _isOpen = [true, true, true];
 

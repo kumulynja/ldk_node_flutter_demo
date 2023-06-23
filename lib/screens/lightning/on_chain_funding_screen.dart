@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ldk_node_flutter_demo/blocs/lightning_funding_address/lightning_funding_address_cubit.dart';
+import 'package:ldk_node_flutter_demo/bloc/lightning_funding_address/lightning_funding_address_cubit.dart';
 import 'package:lightning_node_repository/lightning_node_repository.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-class FundOnChainScreen extends StatelessWidget {
-  const FundOnChainScreen({Key? key}) : super(key: key);
+class OnChainFundingScreen extends StatelessWidget {
+  const OnChainFundingScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

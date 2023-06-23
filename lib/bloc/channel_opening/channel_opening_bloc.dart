@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:ldk_node_flutter_demo/blocs/channel_opening/channel_opening_event.dart';
+import 'package:ldk_node_flutter_demo/bloc/channel_opening/channel_opening_event.dart';
 import 'package:ldk_node_flutter_demo/models/form_inputs/amount_msat.dart';
 import 'package:ldk_node_flutter_demo/models/form_inputs/amount_sats.dart';
 import 'package:ldk_node_flutter_demo/models/form_inputs/ip.dart';

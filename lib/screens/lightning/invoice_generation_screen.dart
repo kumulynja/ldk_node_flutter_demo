@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ldk_node_flutter_demo/blocs/invoice_generation/invoice_generation_bloc.dart';
-import 'package:ldk_node_flutter_demo/blocs/invoice_generation/invoice_generation_event.dart';
-import 'package:ldk_node_flutter_demo/blocs/invoice_generation/invoice_generation_state.dart';
+import 'package:ldk_node_flutter_demo/bloc/invoice_generation/invoice_generation_bloc.dart';
+import 'package:ldk_node_flutter_demo/bloc/invoice_generation/invoice_generation_event.dart';
+import 'package:ldk_node_flutter_demo/bloc/invoice_generation/invoice_generation_state.dart';
 import 'package:ldk_node_flutter_demo/models/form_inputs/amount_msat.dart';
 import 'package:ldk_node_flutter_demo/models/form_inputs/invoice_description.dart';
 import 'package:ldk_node_flutter_demo/models/form_inputs/invoice_expiry_secs.dart';

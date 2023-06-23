@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CloseChannelScreen extends StatelessWidget {
-  const CloseChannelScreen({super.key});
+class ChannelClosingScreen extends StatelessWidget {
+  const ChannelClosingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
