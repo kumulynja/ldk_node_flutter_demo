@@ -52,23 +52,23 @@ class LightningNodeBloc extends Bloc<LightningNodeEvent, LightningNodeState> {
     try {
       final mnemonic = await _seedRepository.retrieveMnemonic();
       await _lightningNodeRepository.startNodeWithMnemonic(
-          mnemonic: mnemonic.asString(),
-          network: event.network.asLightningNodeRepositoryNetwork);
-      final nodeId = await _lightningNodeRepository.nodeId;
-      final listeningIp = await _lightningNodeRepository.listeningIp;
-      final listeningPort = await _lightningNodeRepository.listeningPort;
-      final onChainBalance = await _lightningNodeRepository.onChainBalance;
-      final channels = await _lightningNodeRepository.channels;
+        mnemonic: mnemonic.asString(),
+        network: event.network.asLightningNodeRepositoryNetwork,
+      );
       emit(
         LightningNodeRunSuccess(
           network: event.network,
-          nodeId: nodeId,
-          listeningIp: listeningIp,
-          listeningPort: listeningPort,
-          onChainBalance: onChainBalance,
-          channels: channels,
+          nodeId: await _lightningNodeRepository.nodeId,
+          listeningIp: await _lightningNodeRepository.listeningIp,
+          listeningPort: await _lightningNodeRepository.listeningPort,
+          onChainBalance: await _lightningNodeRepository.onChainBalance,
+          channels: await _lightningNodeRepository.channels,
+          payments: await _lightningNodeRepository.payments,
         ),
       );
+      if (kDebugMode) {
+        print('node started in state: ${state.toString()}');
+      }
     } catch (e) {
       if (kDebugMode) {
         print("node start failed with error: $e");
@@ -82,27 +82,36 @@ class LightningNodeBloc extends Bloc<LightningNodeEvent, LightningNodeState> {
     Emitter<LightningNodeState> emit,
   ) async {
     if (state is LightningNodeRunSuccess) {
-      final onChainBalance = await _lightningNodeRepository.onChainBalance;
-      final channels = await _lightningNodeRepository.channels;
-
       emit((state as LightningNodeRunSuccess).copyWith(
-        onChainBalance: onChainBalance,
-        channels: channels,
+        onChainBalance: await _lightningNodeRepository.onChainBalance,
+        channels: await _lightningNodeRepository.channels,
+        payments: await _lightningNodeRepository.payments,
       ));
 
       if (kDebugMode) {
+        final onChainBalance =
+            (state as LightningNodeRunSuccess).onChainBalance;
         print(
             'onChainBalance untrustedPending: ${onChainBalance.untrustedPending}');
         print(
             'onChainBalance trustedPending: ${onChainBalance.trustedPending}');
         print('onChainBalance confirmed: ${onChainBalance.confirmed}');
         print('onChainBalance immature: ${onChainBalance.immature}');
-        print('channels length: ${channels.length}');
+
+        final channels = (state as LightningNodeRunSuccess).channels;
         for (var e in channels) {
           print('channel id: ${e.channelId.asHex}');
           print('channel is public: ${e.isPublic}');
           print('channel is channel ready: ${e.isChannelReady}');
           print('channel is usable: ${e.isUsable}');
+        }
+
+        final payments = (state as LightningNodeRunSuccess).payments;
+        for (var e in payments) {
+          print('payment hash: ${e.hash.field0.asHex}');
+          print('payment status: ${e.status.name}');
+          print('payment amountMsat: ${e.amountMsat}');
+          print('payment direction: ${e.direction.name}');
         }
       }
     }
@@ -112,11 +121,28 @@ class LightningNodeBloc extends Bloc<LightningNodeEvent, LightningNodeState> {
     PaymentEventReceived event,
     Emitter<LightningNodeState> emit,
   ) async {
-    final channels = await _lightningNodeRepository.channels;
     if (state is LightningNodeRunSuccess) {
       emit((state as LightningNodeRunSuccess).copyWith(
-        channels: channels,
+        channels: await _lightningNodeRepository.channels,
+        payments: await _lightningNodeRepository.payments,
       ));
+
+      if (kDebugMode) {
+        final channels = (state as LightningNodeRunSuccess).channels;
+        final payments = (state as LightningNodeRunSuccess).payments;
+        for (var e in channels) {
+          print('channel id: ${e.channelId.asHex}');
+          print('channel is public: ${e.isPublic}');
+          print('channel is channel ready: ${e.isChannelReady}');
+          print('channel is usable: ${e.isUsable}');
+        }
+        for (var e in payments) {
+          print('payment hash: ${e.hash.field0}');
+          print('payment status: ${e.status.name}');
+          print('payment amountMsat: ${e.amountMsat}');
+          print('payment direction: ${e.direction.name}');
+        }
+      }
     }
   }
 
@@ -124,13 +150,39 @@ class LightningNodeBloc extends Bloc<LightningNodeEvent, LightningNodeState> {
     ChannelEventReceived event,
     Emitter<LightningNodeState> emit,
   ) async {
-    final onChainBalance = await _lightningNodeRepository.onChainBalance;
-    final channels = await _lightningNodeRepository.channels;
     if (state is LightningNodeRunSuccess) {
-      emit((state as LightningNodeRunSuccess).copyWith(
-        onChainBalance: onChainBalance,
-        channels: channels,
-      ));
+      emit(
+        (state as LightningNodeRunSuccess).copyWith(
+          onChainBalance: await _lightningNodeRepository.onChainBalance,
+          channels: await _lightningNodeRepository.channels,
+          payments: await _lightningNodeRepository.payments,
+        ),
+      );
+
+      if (kDebugMode) {
+        final onChainBalance =
+            (state as LightningNodeRunSuccess).onChainBalance;
+        print(
+            'onChainBalance untrustedPending: ${onChainBalance.untrustedPending}');
+        print(
+            'onChainBalance trustedPending: ${onChainBalance.trustedPending}');
+        print('onChainBalance confirmed: ${onChainBalance.confirmed}');
+        print('onChainBalance immature: ${onChainBalance.immature}');
+        final channels = (state as LightningNodeRunSuccess).channels;
+        for (var e in channels) {
+          print('channel id: ${e.channelId.asHex}');
+          print('channel is public: ${e.isPublic}');
+          print('channel is channel ready: ${e.isChannelReady}');
+          print('channel is usable: ${e.isUsable}');
+        }
+        final payments = (state as LightningNodeRunSuccess).payments;
+        for (var e in payments) {
+          print('payment hash: ${e.hash.field0}');
+          print('payment status: ${e.status.name}');
+          print('payment amountMsat: ${e.amountMsat}');
+          print('payment direction: ${e.direction.name}');
+        }
+      }
     }
   }
 }

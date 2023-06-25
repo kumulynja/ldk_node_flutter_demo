@@ -16,6 +16,7 @@ A project to demonstrate and teach about the use of the Lightning Development Ki
 - [ ] Handling events from the LDK Node.
 - [ ] Lightning channel closing.
 - [ ] Lightning keysend payment.
+- [ ] Send the on-chain balance to a Bitcoin address.
 - [ ] Lightning BOLT12 payment request generation and payment.
 - [ ] Unified Bitcoin savings wallet with BDK.
 
