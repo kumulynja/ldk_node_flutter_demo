@@ -22,4 +22,17 @@ final class PaymentRequestChanged extends InvoicePaymentEvent {
 
 final class PaymentRequestUnfocused extends InvoicePaymentEvent {}
 
-final class InvoicePaymentSubmitted extends InvoicePaymentEvent {}
+final class AmountMsatChanged extends InvoicePaymentEvent {
+  const AmountMsatChanged(
+    this.amountMsat,
+  );
+
+  final String amountMsat;
+
+  @override
+  List<Object?> get props => [amountMsat];
+}
+
+final class AmountMsatUnfocused extends InvoicePaymentEvent {}
+
+final class InvoicePaymentConfirmed extends InvoicePaymentEvent {}

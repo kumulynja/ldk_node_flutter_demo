@@ -35,7 +35,7 @@ class ChannelOpeningScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32.0),
-                const OpenChannelForm(),
+                const ChannelOpeningForm(),
               ],
             ),
           ),
@@ -45,14 +45,14 @@ class ChannelOpeningScreen extends StatelessWidget {
   }
 }
 
-class OpenChannelForm extends StatefulWidget {
-  const OpenChannelForm({super.key});
+class ChannelOpeningForm extends StatefulWidget {
+  const ChannelOpeningForm({super.key});
 
   @override
-  State<OpenChannelForm> createState() => _OpenChannelFormState();
+  State<ChannelOpeningForm> createState() => _ChannelOpeningFormState();
 }
 
-class _OpenChannelFormState extends State<OpenChannelForm> {
+class _ChannelOpeningFormState extends State<ChannelOpeningForm> {
   final _addressIpFocusNode = FocusNode();
   final _addressPortFocusNode = FocusNode();
   final _counterpartyPublicKeyFocusNode = FocusNode();
@@ -107,6 +107,13 @@ class _OpenChannelFormState extends State<OpenChannelForm> {
   Widget build(BuildContext context) {
     return BlocListener<ChannelOpeningBloc, ChannelOpeningState>(
       listener: (context, state) {
+        if (state.status.isInProgress) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar
+            ..showSnackBar(
+              const SnackBar(content: Text('Opening channel...')),
+            );
+        }
         if (state.status.isSuccess) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           showDialog<void>(
@@ -117,7 +124,7 @@ class _OpenChannelFormState extends State<OpenChannelForm> {
                 content: const Text('Channel opened successfully'),
                 actions: [
                   TextButton(
-                    onPressed: () => GoRouter.of(context).pop(),
+                    onPressed: () => GoRouter.of(context).goNamed('lightning'),
                     child: const Text('OK'),
                   ),
                 ],
@@ -125,12 +132,24 @@ class _OpenChannelFormState extends State<OpenChannelForm> {
             },
           );
         }
-        if (state.status.isInProgress) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar
-            ..showSnackBar(
-              const SnackBar(content: Text('Opening channel...')),
-            );
+        if (state.status.isFailure) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          showDialog<void>(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: const Text('Channel opening failed'),
+                content: const Text(
+                    'Failed to open channel. Check details and try again, please.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => GoRouter.of(context).pop(),
+                    child: const Text('Try again'),
+                  ),
+                ],
+              );
+            },
+          );
         }
       },
       child: Padding(

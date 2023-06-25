@@ -100,6 +100,24 @@ class LightningNodeRepository {
     );
   }
 
+  Future<ldk.PaymentHash> sendInvoicePayment({
+    required String invoice,
+  }) async {
+    return _node.sendPayment(
+      invoice: ldk.Invoice(hex: invoice),
+    );
+  }
+
+  Future<ldk.PaymentHash> sendInvoicePaymentUsingAmount({
+    required String invoice,
+    required int amountMsat,
+  }) async {
+    return _node.sendPaymentUsingAmount(
+      invoice: ldk.Invoice(hex: invoice),
+      amountMsat: amountMsat,
+    );
+  }
+
   // Getters
   Future<String> get nodeId async {
     final publicKey = await _node.nodeId();
@@ -233,8 +251,11 @@ class LightningNodeRepository {
       case Network.signet:
         throw UnimplementedError('Signet network is not supported yet.');
       case Network.regtest:
-        return NodeConfig.forRegtest(storageDirPath: nodePath);
-      //esploraUrl = Platform.isAndroid ? "http://10.0.2.2:3002" : "http://0.0.0.0:3002"; // Please use 10.0.2.2, instead of 0.0.0.0
+        return NodeConfig.forRegtest(
+            storageDirPath: nodePath,
+            esploraServerUrl: Platform.isAndroid
+                ? 'http://10.0.2.2:3002'
+                : 'http://0.0.0.0:3002');
       default:
         throw ArgumentError('Invalid network: $network');
     }

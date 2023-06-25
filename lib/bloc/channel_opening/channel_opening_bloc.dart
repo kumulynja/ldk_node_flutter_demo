@@ -273,7 +273,7 @@ class ChannelOpeningBloc
         emit(state.copyWith(status: FormzSubmissionStatus.success));
       }
     } catch (e) {
-      if (kDebugMode) print(e);
+      if (kDebugMode) print('Channel opening ERROR: $e');
       emit(state.copyWith(status: FormzSubmissionStatus.failure));
     }
   }
