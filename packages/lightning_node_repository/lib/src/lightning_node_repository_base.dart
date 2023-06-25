@@ -100,6 +100,24 @@ class LightningNodeRepository {
     );
   }
 
+  Future<ldk.PaymentHash> sendInvoicePayment({
+    required String invoice,
+  }) async {
+    return _node.sendPayment(
+      invoice: ldk.Invoice(hex: invoice),
+    );
+  }
+
+  Future<ldk.PaymentHash> sendInvoicePaymentUsingAmount({
+    required String invoice,
+    required int amountMsat,
+  }) async {
+    return _node.sendPaymentUsingAmount(
+      invoice: ldk.Invoice(hex: invoice),
+      amountMsat: amountMsat,
+    );
+  }
+
   // Getters
   Future<String> get nodeId async {
     final publicKey = await _node.nodeId();

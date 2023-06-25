@@ -27,8 +27,7 @@ class DecodedInvoice {
     // Check if amount is defined in the invoice
     if (_bech32.hrp.length > prefix.name.length) {
       // remove prefix
-      final amountSection = _bech32.hrp.substring(prefix.name.length + 1);
-
+      final amountSection = _bech32.hrp.substring(prefix.name.length);
       // Apply multipliers if present in amount section
       const Map<String, double> multipliers = {
         'm': 0.001, // mili
@@ -37,12 +36,17 @@ class DecodedInvoice {
         'p': 0.000000000001, // pico
       };
 
-      double amountBtc = multipliers.containsKey(
+      double amountBtc;
+      if (multipliers.containsKey(
         amountSection.substring(amountSection.length - 1),
-      )
-          ? double.parse(amountSection) *
-              multipliers[amountSection.substring(amountSection.length - 1)]!
-          : double.parse(amountSection);
+      )) {
+        final multiplierKey = amountSection.substring(amountSection.length - 1);
+        final amount =
+            double.parse(amountSection.substring(0, amountSection.length - 1));
+        amountBtc = amount * multipliers[multiplierKey]!;
+      } else {
+        amountBtc = double.parse(amountSection);
+      }
 
       return (amountBtc * 100000000000).round(); // 1 BTC = 100000000000 msat
     }

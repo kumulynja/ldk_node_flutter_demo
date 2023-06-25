@@ -5,6 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:ldk_node_flutter_demo/bloc/invoice_payment/invoice_payment_bloc.dart';
 import 'package:ldk_node_flutter_demo/bloc/invoice_payment/invoice_payment_event.dart';
 import 'package:ldk_node_flutter_demo/bloc/invoice_payment/invoice_payment_state.dart';
+import 'package:ldk_node_flutter_demo/bloc/lightning_node/lightning_node_bloc.dart';
+import 'package:ldk_node_flutter_demo/bloc/lightning_node/lightning_node_state.dart';
+import 'package:ldk_node_flutter_demo/models/form_inputs/amount_msat.dart';
+import 'package:ldk_node_flutter_demo/models/form_inputs/payment_request.dart';
 import 'package:lightning_node_repository/lightning_node_repository.dart';
 
 class InvoicePaymentScreen extends StatelessWidget {
@@ -54,6 +58,7 @@ class InvoicePaymentForm extends StatefulWidget {
 
 class _InvoicePaymentFormState extends State<InvoicePaymentForm> {
   final _paymentRequestFocusNode = FocusNode();
+  final _amountMsatFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -63,11 +68,17 @@ class _InvoicePaymentFormState extends State<InvoicePaymentForm> {
         context.read<InvoicePaymentBloc>().add(PaymentRequestUnfocused());
       }
     });
+    _amountMsatFocusNode.addListener(() {
+      if (!_amountMsatFocusNode.hasFocus) {
+        context.read<InvoicePaymentBloc>().add(AmountMsatUnfocused());
+      }
+    });
   }
 
   @override
   void dispose() {
     _paymentRequestFocusNode.dispose();
+    _amountMsatFocusNode.dispose();
     super.dispose();
   }
 
@@ -111,8 +122,12 @@ class _InvoicePaymentFormState extends State<InvoicePaymentForm> {
                 focusNode: _paymentRequestFocusNode,
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: _AmountMsatInput(focusNode: _amountMsatFocusNode),
+            ),
             const SizedBox(height: 16), // Spacing before the button
-            //const _ConfirmPaymentButton(),
+            const _PaymentConfirmationButton(),
           ],
         ),
       ),
@@ -127,16 +142,18 @@ class _PaymentRequestInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<InvoicePaymentBloc, InvoicePaymentState>(
-      builder: (context, state) {
+    return BlocSelector<InvoicePaymentBloc, InvoicePaymentState,
+        PaymentRequest>(
+      selector: (state) => state.paymentRequest,
+      builder: (context, paymentRequest) {
         return TextFormField(
-          initialValue: state.paymentRequest.value,
+          initialValue: paymentRequest.value,
           focusNode: focusNode,
           decoration: InputDecoration(
             labelText: 'Payment request',
             helperText:
                 'The payment request can be a BIP21 URI or a Lightning invoice.',
-            errorText: state.paymentRequest.displayError != null
+            errorText: paymentRequest.displayError != null
                 ? 'Please ensure the payment request is valid.'
                 : null,
           ),
@@ -149,6 +166,71 @@ class _PaymentRequestInput extends StatelessWidget {
           textInputAction: TextInputAction.next,
         );
       },
+    );
+  }
+}
+
+class _AmountMsatInput extends StatefulWidget {
+  const _AmountMsatInput({required this.focusNode});
+
+  final FocusNode focusNode;
+
+  @override
+  _AmountMsatInputState createState() => _AmountMsatInputState();
+}
+
+class _AmountMsatInputState extends State<_AmountMsatInput> {
+  /// A controller is needed here, because not only the user can change the value, but also the bloc when the amount is taken from the invoice.
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<InvoicePaymentBloc, InvoicePaymentState>(
+      builder: (context, state) {
+        _controller.text = state.amountMsat.value.toString();
+
+        return TextFormField(
+          controller: _controller,
+          focusNode: widget.focusNode,
+          decoration: InputDecoration(
+            labelText: 'Amount (msat)',
+            helperText: 'The amount to pay in millisatoshis.',
+            errorText: state.amountMsat.displayError != null
+                ? 'Please ensure the amount is valid.'
+                : null,
+            enabled: !state.isAmountMsatFromInvoice,
+          ),
+          keyboardType: TextInputType.number,
+          onChanged: (value) {
+            context.read<InvoicePaymentBloc>().add(AmountMsatChanged(value));
+          },
+          textInputAction: TextInputAction.done,
+        );
+      },
+    );
+  }
+}
+
+class _PaymentConfirmationButton extends StatelessWidget {
+  const _PaymentConfirmationButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final spendableBalance = context.select((LightningNodeBloc bloc) =>
+        bloc.state is LightningNodeRunSuccess
+            ? (bloc.state as LightningNodeRunSuccess).totalOutBoundCapacityMsat
+            : 0);
+    return BlocBuilder<InvoicePaymentBloc, InvoicePaymentState>(
+      builder: (context, state) => ElevatedButton(
+        onPressed: state.isValid && spendableBalance >= state.amountMsat.value
+            ? () {
+                context
+                    .read<InvoicePaymentBloc>()
+                    .add(InvoicePaymentConfirmed());
+              }
+            : null,
+        child: const Text('Pay invoice'),
+      ),
     );
   }
 }

@@ -10,8 +10,8 @@ final class InvoicePaymentState extends Equatable {
     // this.description = const InvoiceDescription.pure(),
     this.isValid = false,
     this.status = FormzSubmissionStatus.initial,
-    this.invoice,
-    this.isAmountMsatFromInvoice,
+    this.invoice = '',
+    this.isAmountMsatFromInvoice = false,
     // this.isExpired = false,
     // this.expirySecs = 0,
   });
@@ -21,8 +21,8 @@ final class InvoicePaymentState extends Equatable {
   // final InvoiceDescription description;
   final bool isValid;
   final FormzSubmissionStatus status;
-  final String? invoice;
-  final bool? isAmountMsatFromInvoice;
+  final String invoice;
+  final bool isAmountMsatFromInvoice;
   //final bool isExpired;
   //final int expirySecs;
 

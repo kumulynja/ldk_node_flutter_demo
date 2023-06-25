@@ -13,6 +13,7 @@ A project to demonstrate and teach about the use of the Lightning Development Ki
 - [x] Lightning invoice generation with or without amount.
 - [ ] Lightning invoice payment.
 - [ ] Lightning payment history display.
+- [ ] Handling events from the LDK Node.
 - [ ] Lightning channel closing.
 - [ ] Lightning keysend payment.
 - [ ] Lightning BOLT12 payment request generation and payment.
