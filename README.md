@@ -12,7 +12,7 @@ A project to demonstrate and teach about the use of the Lightning Development Ki
 - [x] Lightning channel opening and spendable Lightning balance display.
 - [x] Lightning invoice generation with or without amount.
 - [x] Lightning invoice payment.
-- [ ] Lightning payment history display.
+- [x] Lightning payment history display.
 - [ ] Handling events from the LDK Node.
 - [ ] Lightning channel closing.
 - [ ] Lightning keysend payment.
@@ -20,7 +20,7 @@ A project to demonstrate and teach about the use of the Lightning Development Ki
 - [ ] Lightning BOLT12 payment request generation and payment.
 - [ ] Unified Bitcoin savings wallet with BDK.
 
-[progress-ldk-node-flutter-demo.webm](https://github.com/kumulynja/ldk_node_flutter_demo/assets/92805150/e0a865d9-cc7e-4d5b-b773-388d29556ce6)
+[progress-ldk-node-flutter-demo.webm](https://github.com/kumulynja/ldk_node_flutter_demo/assets/92805150/7b53b7f5-2d64-46a2-8b92-5b202766c676)
 
 ## Local development environment setup
 
