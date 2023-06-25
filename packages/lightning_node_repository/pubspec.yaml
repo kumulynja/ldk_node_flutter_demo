@@ -1,0 +1,21 @@
+name: lightning_node_repository
+description: Dart package which manages the lightning node domain.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  bdk_flutter: 
+    git:
+      url: https://github.com/kumulynja/bdk-flutter
+      ref: frb-to-1.77.0
+  ldk_node:
+    git:
+      url: https://github.com/LtbLightning/ldk-node-flutter
+      ref: v0.1.1
+  path_provider: ^2.0.15
+      
+dev_dependencies:
+  test: ^1.17.11
