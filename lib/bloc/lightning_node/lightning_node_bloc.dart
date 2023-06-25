@@ -51,8 +51,6 @@ class LightningNodeBloc extends Bloc<LightningNodeEvent, LightningNodeState> {
   ) async {
     try {
       final mnemonic = await _seedRepository.retrieveMnemonic();
-      //final seed = await mnemonic.toLightningSeed(event.network.asSeedRepositoryNetwork, event.password);
-      //print("seed: $seed");
       await _lightningNodeRepository.startNodeWithMnemonic(
           mnemonic: mnemonic.asString(),
           network: event.network.asLightningNodeRepositoryNetwork);

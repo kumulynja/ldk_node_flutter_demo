@@ -251,8 +251,11 @@ class LightningNodeRepository {
       case Network.signet:
         throw UnimplementedError('Signet network is not supported yet.');
       case Network.regtest:
-        return NodeConfig.forRegtest(storageDirPath: nodePath);
-      //esploraUrl = Platform.isAndroid ? "http://10.0.2.2:3002" : "http://0.0.0.0:3002"; // Please use 10.0.2.2, instead of 0.0.0.0
+        return NodeConfig.forRegtest(
+            storageDirPath: nodePath,
+            esploraServerUrl: Platform.isAndroid
+                ? 'http://10.0.2.2:3002'
+                : 'http://0.0.0.0:3002');
       default:
         throw ArgumentError('Invalid network: $network');
     }

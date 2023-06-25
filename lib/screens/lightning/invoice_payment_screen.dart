@@ -7,7 +7,6 @@ import 'package:ldk_node_flutter_demo/bloc/invoice_payment/invoice_payment_event
 import 'package:ldk_node_flutter_demo/bloc/invoice_payment/invoice_payment_state.dart';
 import 'package:ldk_node_flutter_demo/bloc/lightning_node/lightning_node_bloc.dart';
 import 'package:ldk_node_flutter_demo/bloc/lightning_node/lightning_node_state.dart';
-import 'package:ldk_node_flutter_demo/models/form_inputs/amount_msat.dart';
 import 'package:ldk_node_flutter_demo/models/form_inputs/payment_request.dart';
 import 'package:lightning_node_repository/lightning_node_repository.dart';
 
@@ -86,6 +85,13 @@ class _InvoicePaymentFormState extends State<InvoicePaymentForm> {
   Widget build(BuildContext context) {
     return BlocListener<InvoicePaymentBloc, InvoicePaymentState>(
       listener: (context, state) {
+        if (state.status.isInProgress) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar
+            ..showSnackBar(
+              const SnackBar(content: Text('Paying invoice...')),
+            );
+        }
         if (state.status.isSuccess) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           showDialog<void>(
@@ -96,7 +102,7 @@ class _InvoicePaymentFormState extends State<InvoicePaymentForm> {
                 content: const Text('Invoice paid successfully'),
                 actions: [
                   TextButton(
-                    onPressed: () => GoRouter.of(context).pop(),
+                    onPressed: () => GoRouter.of(context).goNamed('lightning'),
                     child: const Text('OK'),
                   ),
                 ],
@@ -104,12 +110,24 @@ class _InvoicePaymentFormState extends State<InvoicePaymentForm> {
             },
           );
         }
-        if (state.status.isInProgress) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar
-            ..showSnackBar(
-              const SnackBar(content: Text('Paying invoice...')),
-            );
+        if (state.status.isFailure) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          showDialog<void>(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: const Text('Invoice payment failed'),
+                content: const Text(
+                    'Invoice could not be paid. Make sure the invoice is correct and try again, please.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => GoRouter.of(context).pop(),
+                    child: const Text('Try again'),
+                  ),
+                ],
+              );
+            },
+          );
         }
       },
       child: Padding(

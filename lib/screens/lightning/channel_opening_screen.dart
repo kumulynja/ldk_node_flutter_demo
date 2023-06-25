@@ -107,6 +107,13 @@ class _ChannelOpeningFormState extends State<ChannelOpeningForm> {
   Widget build(BuildContext context) {
     return BlocListener<ChannelOpeningBloc, ChannelOpeningState>(
       listener: (context, state) {
+        if (state.status.isInProgress) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar
+            ..showSnackBar(
+              const SnackBar(content: Text('Opening channel...')),
+            );
+        }
         if (state.status.isSuccess) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           showDialog<void>(
@@ -117,7 +124,7 @@ class _ChannelOpeningFormState extends State<ChannelOpeningForm> {
                 content: const Text('Channel opened successfully'),
                 actions: [
                   TextButton(
-                    onPressed: () => GoRouter.of(context).pop(),
+                    onPressed: () => GoRouter.of(context).goNamed('lightning'),
                     child: const Text('OK'),
                   ),
                 ],
@@ -125,12 +132,24 @@ class _ChannelOpeningFormState extends State<ChannelOpeningForm> {
             },
           );
         }
-        if (state.status.isInProgress) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar
-            ..showSnackBar(
-              const SnackBar(content: Text('Opening channel...')),
-            );
+        if (state.status.isFailure) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          showDialog<void>(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: const Text('Channel opening failed'),
+                content: const Text(
+                    'Failed to open channel. Check details and try again, please.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => GoRouter.of(context).pop(),
+                    child: const Text('Try again'),
+                  ),
+                ],
+              );
+            },
+          );
         }
       },
       child: Padding(

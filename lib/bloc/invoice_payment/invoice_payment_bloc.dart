@@ -27,7 +27,6 @@ class InvoicePaymentBloc
     PaymentRequestChanged event,
     Emitter<InvoicePaymentState> emit,
   ) async {
-    print('_onPaymentRequestChanged START: ${state.amountMsat.value}');
     final paymentRequest = PaymentRequest.dirty(event.paymentRequest);
     emit(state.copyWith(
       paymentRequest: paymentRequest.isValid
@@ -38,14 +37,12 @@ class InvoicePaymentBloc
         state.amountMsat,
       ]),
     ));
-    print('_onPaymentRequestChanged STOP: ${state.amountMsat.value}');
   }
 
   Future<void> _onPaymentRequestUnfocused(
     PaymentRequestUnfocused event,
     Emitter<InvoicePaymentState> emit,
   ) async {
-    print('_onPaymentRequestUnfocused START1: ${state.amountMsat.value}');
     final paymentRequest = PaymentRequest.dirty(state.paymentRequest.value);
     emit(state.copyWith(
       paymentRequest: paymentRequest,
@@ -55,11 +52,9 @@ class InvoicePaymentBloc
       ]),
     ));
     if (paymentRequest.isValid) {
-      print('Payment request is valid');
       final invoice = paymentRequest.isBip21
           ? paymentRequest.parseBip21()
           : paymentRequest.value;
-      print(invoice);
       // Todo: decode invoice and emit state with amount, description and a bool that says if the invoice is expired or not (if it is expired, the user should not be able to pay it)
       // On the screen also the spendable balance can be checked and if it is lower than the invoice amount, the submit button can be disabled and a message can be shown to top up its balance.
       final decodedInvoice = DecodedInvoice(invoice);
@@ -89,16 +84,13 @@ class InvoicePaymentBloc
         ),
       );
     }
-    print('_onPaymentRequestUnfocused STOP: ${state.amountMsat.value}');
   }
 
   Future<void> _onAmountMsatChanged(
     AmountMsatChanged event,
     Emitter<InvoicePaymentState> emit,
   ) async {
-    print('_onAmountMsatChanged START1: ${state.amountMsat.value}');
     final amountMsat = AmountMsat.dirty(int.parse(event.amountMsat));
-    print('_onAmountMsatChanged START2: ${amountMsat.value}');
     emit(state.copyWith(
       amountMsat: amountMsat.isValid
           ? amountMsat
@@ -108,7 +100,6 @@ class InvoicePaymentBloc
         amountMsat,
       ]),
     ));
-    print('_onAmountMsatChanged STOP: ${state.amountMsat.value}');
   }
 
   Future<void> _onAmountMsatUnfocused(
@@ -116,7 +107,6 @@ class InvoicePaymentBloc
     Emitter<InvoicePaymentState> emit,
   ) async {
     final amountMsat = AmountMsat.dirty(state.amountMsat.value);
-    print('_onAmountMsatUnfocused START: ${amountMsat.value}');
     emit(state.copyWith(
       amountMsat: amountMsat,
       isValid: Formz.validate([
@@ -124,7 +114,6 @@ class InvoicePaymentBloc
         amountMsat,
       ]),
     ));
-    print('_onAmountMsatUnfocused STOP: ${state.amountMsat.value}');
   }
 
   Future<void> _onInvoicePaymentConfirmed(
@@ -156,6 +145,7 @@ class InvoicePaymentBloc
         if (kDebugMode) print('paymentHash: $paymentHash');
         emit(state.copyWith(status: FormzSubmissionStatus.success));
       } catch (e) {
+        if (kDebugMode) print('Invoice payment ERROR: $e');
         emit(state.copyWith(status: FormzSubmissionStatus.failure));
       }
     }

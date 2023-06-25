@@ -1,5 +1,4 @@
 import 'package:bech32/bech32.dart';
-import 'package:ldk_node_flutter_demo/enums/bolt11_prefix.dart';
 
 class DecodedInvoice {
   DecodedInvoice(this.invoice) {
@@ -15,19 +14,19 @@ class DecodedInvoice {
 
   final String invoice;
   late final Bech32 _bech32;
-  late final Bolt11Prefix prefix;
+  late final String prefix;
   late final int? amountMsat;
 
-  Bolt11Prefix get _prefix {
-    return Bolt11Prefix.values
-        .firstWhere((prefix) => _bech32.hrp.startsWith(prefix.name));
+  String get _prefix {
+    // Both the separator as a specified amount are numbers, so cut the hrp at the first digit
+    return _bech32.hrp.substring(0, _bech32.hrp.indexOf(RegExp(r'\d')));
   }
 
   int? get _amountMsat {
     // Check if amount is defined in the invoice
-    if (_bech32.hrp.length > prefix.name.length) {
+    if (_bech32.hrp.length > prefix.length) {
       // remove prefix
-      final amountSection = _bech32.hrp.substring(prefix.name.length);
+      final amountSection = _bech32.hrp.substring(prefix.length);
       // Apply multipliers if present in amount section
       const Map<String, double> multipliers = {
         'm': 0.001, // mili
