@@ -13,7 +13,7 @@ Future<void> main() async {
   // Initialize repositories
   final seedRepository = SeedRepository();
   final lightningNodeRepository = LightningNodeRepository();
-  // Create BloCs
+  // Create blocs
   final networkCubit = NetworkCubit(
     AppNetwork.testnet,
   ); // Change this to Network.Bitcoin in production

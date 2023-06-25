@@ -35,7 +35,7 @@ class ChannelOpeningScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32.0),
-                const OpenChannelForm(),
+                const ChannelOpeningForm(),
               ],
             ),
           ),
@@ -45,14 +45,14 @@ class ChannelOpeningScreen extends StatelessWidget {
   }
 }
 
-class OpenChannelForm extends StatefulWidget {
-  const OpenChannelForm({super.key});
+class ChannelOpeningForm extends StatefulWidget {
+  const ChannelOpeningForm({super.key});
 
   @override
-  State<OpenChannelForm> createState() => _OpenChannelFormState();
+  State<ChannelOpeningForm> createState() => _ChannelOpeningFormState();
 }
 
-class _OpenChannelFormState extends State<OpenChannelForm> {
+class _ChannelOpeningFormState extends State<ChannelOpeningForm> {
   final _addressIpFocusNode = FocusNode();
   final _addressPortFocusNode = FocusNode();
   final _counterpartyPublicKeyFocusNode = FocusNode();
