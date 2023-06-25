@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:lightning_node_repository/lightning_node_repository.dart';
 import 'package:lightning_node_repository/src/enums/network.dart';
 import 'package:lightning_node_repository/src/utils/node_config_extension.dart';
 import 'package:lightning_node_repository/src/models/channel_events.dart';
@@ -145,6 +146,37 @@ class LightningNodeRepository {
 
   Future<List<ldk.ChannelDetails>> get channels async {
     return await _node.listChannels();
+  }
+
+  Future<List<ldk.PaymentDetails>> get payments async {
+    List<ldk.PaymentDetails> payments = await _node.listPaymentsWithFilter(
+      paymentDirection: ldk.PaymentDirection.inbound,
+    );
+    List<ldk.PaymentDetails> outboundPayments =
+        await _node.listPaymentsWithFilter(
+      paymentDirection: ldk.PaymentDirection.outbound,
+    );
+
+    /// The following mapping is a fix for a bug in the LDK node library that returns all payments as inbound
+    outboundPayments = outboundPayments
+        .map(
+          (payment) => PaymentDetails(
+            hash: payment.hash,
+            direction: ldk.PaymentDirection.outbound,
+            status: payment.status,
+            amountMsat: payment.amountMsat,
+          ),
+        )
+        .toList();
+
+    payments.addAll(
+      outboundPayments,
+    );
+
+    // Sort payments by status
+    payments.sort((a, b) => b.status.index.compareTo(a.status.index));
+
+    return payments;
   }
 
   // Private instance methods

@@ -21,6 +21,7 @@ class LightningNodeRunSuccess extends LightningNodeState {
     required this.listeningPort,
     required this.onChainBalance,
     required this.channels,
+    required this.payments,
   });
 
   final AppNetwork network;
@@ -29,6 +30,7 @@ class LightningNodeRunSuccess extends LightningNodeState {
   final int? listeningPort;
   final Balance onChainBalance;
   final List<ChannelDetails> channels;
+  final List<PaymentDetails> payments;
 
   LightningNodeRunSuccess copyWith({
     AppNetwork? network,
@@ -37,6 +39,7 @@ class LightningNodeRunSuccess extends LightningNodeState {
     int? listeningPort,
     Balance? onChainBalance,
     List<ChannelDetails>? channels,
+    List<PaymentDetails>? payments,
   }) {
     return LightningNodeRunSuccess(
       network: network ?? this.network,
@@ -45,6 +48,7 @@ class LightningNodeRunSuccess extends LightningNodeState {
       listeningPort: listeningPort ?? this.listeningPort,
       onChainBalance: onChainBalance ?? this.onChainBalance,
       channels: channels ?? this.channels,
+      payments: payments ?? this.payments,
     );
   }
 
@@ -75,8 +79,15 @@ class LightningNodeRunSuccess extends LightningNodeState {
       totalOutBoundCapacityMsat / 1000; // 1 sat = 1000 msats
 
   @override
-  List<Object?> get props =>
-      [network, nodeId, listeningIp, listeningPort, onChainBalance, channels];
+  List<Object?> get props => [
+        network,
+        nodeId,
+        listeningIp,
+        listeningPort,
+        onChainBalance,
+        channels,
+        payments
+      ];
 }
 
 class LightningNodeRunFailure extends LightningNodeState {
