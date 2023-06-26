@@ -1,9 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ldk_node_flutter_demo">
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="ldk_node_flutter_demo"
+        android:label="LDK node Flutter Demo"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
