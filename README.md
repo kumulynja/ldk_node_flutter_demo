@@ -20,7 +20,7 @@ A project to demonstrate and teach about the use of the Lightning Development Ki
 - [ ] Lightning BOLT12 payment request generation and payment.
 - [ ] Unified Bitcoin savings wallet with BDK.
 
-[progress-ldk-node-flutter-demo.webm](https://github.com/kumulynja/ldk_node_flutter_demo/assets/92805150/7b53b7f5-2d64-46a2-8b92-5b202766c676)
+[Demo Video](https://drive.google.com/file/d/1pWVVAsp-huyCqNPC0cvA0VyHT-wc7PHd/view)
 
 ## Local development environment setup
 
